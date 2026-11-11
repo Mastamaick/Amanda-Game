@@ -35,6 +35,19 @@
   .tbtn.big { width:96px; height:96px; background:rgba(255,216,77,.9); font-size:44px; }
   .tbtn.small { width:66px; height:66px; font-size:30px; }
   .tbtn.down { transform:translateY(4px) scale(.96); box-shadow:none; background:var(--pink); }
+  /* Palanca analógica (como la de un control) */
+  #stick { pointer-events:auto; position:relative; width:168px; height:168px; border-radius:50%; touch-action:none;
+    background:radial-gradient(circle, rgba(255,248,236,.55) 0 58%, rgba(255,248,236,.25) 59% 100%);
+    border:4px solid rgba(74,47,85,.55); box-shadow:0 5px 0 rgba(74,47,85,.25), inset 0 0 0 10px rgba(255,255,255,.25); }
+  #stick .ring { position:absolute; inset:26px; border-radius:50%; border:3px dashed rgba(74,47,85,.3); }
+  #stick .arr { position:absolute; font-size:20px; color:rgba(74,47,85,.55); line-height:1; }
+  #stick .arr.l { left:8px; top:50%; transform:translateY(-50%); } #stick .arr.r { right:8px; top:50%; transform:translateY(-50%); }
+  #stick .arr.d { bottom:6px; left:50%; transform:translateX(-50%); font-size:16px; }
+  #knob { position:absolute; left:50%; top:50%; width:76px; height:76px; margin:-38px 0 0 -38px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff6c9, var(--yellow) 55%, #e8b92c); border:4px solid var(--ink);
+    box-shadow:0 5px 0 rgba(74,47,85,.35); transition:transform .08s; }
+  #stick.on #knob { transition:none; }
+  #stick.on { border-color:var(--ink); }
 
   /* Overlays */
   .overlay { position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:16px; text-align:center;
@@ -102,12 +115,12 @@
 </div>
 
 <div id="touch">
-  <div class="tgroup">
-    <button class="tbtn" data-k="left" aria-label="Izquierda">◀</button>
-    <button class="tbtn" data-k="right" aria-label="Derecha">▶</button>
+  <div id="stick" aria-label="Palanca para caminar">
+    <div class="ring"></div>
+    <span class="arr l">◀</span><span class="arr r">▶</span><span class="arr d">▼</span>
+    <div id="knob"></div>
   </div>
   <div class="tgroup">
-    <button class="tbtn small" data-k="down" aria-label="Agacharse">⬇</button>
     <button class="tbtn small help" data-k="wave" aria-label="Ayudar">✋</button>
     <button class="tbtn big" data-k="jump" aria-label="Saltar">⬆</button>
   </div>

@@ -188,6 +188,30 @@ document.querySelectorAll('.tbtn').forEach(b => {
   b.addEventListener('contextmenu', e => e.preventDefault());
 });
 document.addEventListener('contextmenu', e => { if (isTouch) e.preventDefault(); });
+// Palanca táctil: se arrastra la perilla; izquierda/derecha caminan y abajo agacha.
+(function () {
+  const st = document.getElementById('stick'), kb = document.getElementById('knob'); if (!st) return;
+  let id = null;
+  const set = (k, on) => { if (on && !keys[k]) press(k); else if (!on && keys[k]) release(k); };
+  function move(e) {
+    const r = st.getBoundingClientRect(), R = r.width / 2 - 20;
+    let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    const d = Math.hypot(dx, dy); if (d > R) { dx *= R / d; dy *= R / d; }
+    kb.style.transform = `translate(${dx}px,${dy}px)`;
+    const dead = R * 0.28;
+    set('left', dx < -dead); set('right', dx > dead); set('down', dy > R * 0.55 && Math.abs(dx) < dy);
+  }
+  function end(e) {
+    if (e.pointerId !== id) return; id = null; st.classList.remove('on');
+    kb.style.transform = ''; set('left', false); set('right', false); set('down', false);
+  }
+  st.addEventListener('pointerdown', e => {
+    e.preventDefault(); initAudio(); id = e.pointerId; st.classList.add('on');
+    try { st.setPointerCapture(id); } catch (_) {} move(e);
+  });
+  st.addEventListener('pointermove', e => { if (e.pointerId === id) { e.preventDefault(); move(e); } });
+  st.addEventListener('pointerup', end); st.addEventListener('pointercancel', end); st.addEventListener('lostpointercapture', end);
+})();
 
 /* ---------------- Control USB (Gamepad) ----------------
    Cruceta o palanca = caminar / agacharse · A o B = saltar · X o Y = ayudar ✋ · Start = pausa.
