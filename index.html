@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>La Aventura de Mandy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#4a2f55; --pink:#ff7fb6; --pink-d:#e2579a; --yellow:#ffd84d; --mint:#7be0c3; --cream:#fff8ec; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; height:100%; overflow:hidden; background:#8fd3ff; font-family:'Fredoka','Baloo 2','Comic Sans MS','Trebuchet MS',sans-serif; color:var(--ink);
+    user-select:none; -webkit-user-select:none; touch-action:none; overscroll-behavior:none; }
+  #stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+  canvas { display:block; }
+
+  /* HUD */
+  #hud { position:fixed; top:0; left:0; right:0; padding:max(10px,env(safe-area-inset-top)) 12px 0; display:none; justify-content:space-between; align-items:flex-start; pointer-events:none; gap:8px; }
+  #hud.on { display:flex; }
+  .pill { background:var(--cream); border:3px solid var(--ink); border-radius:999px; padding:4px 14px; font-weight:700; font-size:22px; box-shadow:0 4px 0 rgba(74,47,85,.25); white-space:nowrap; }
+  .hud-left, .hud-right { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .hud-right { justify-content:flex-end; }
+  #lvlName { background:var(--mint); font-size:18px; }
+  .hbtn { pointer-events:auto; width:46px; height:46px; border-radius:50%; border:3px solid var(--ink); background:var(--cream); font-size:22px; cursor:pointer; box-shadow:0 4px 0 rgba(74,47,85,.25); padding:0; font-family:inherit; }
+  .hbtn:active { transform:translateY(3px); box-shadow:none; }
+  #hearts span.off { filter:grayscale(1); opacity:.35; }
+
+  /* Touch controls */
+  #touch { position:fixed; left:0; right:0; bottom:0; padding:0 14px max(14px,env(safe-area-inset-bottom)); display:none; justify-content:space-between; align-items:flex-end; pointer-events:none; }
+  #touch.on { display:flex; }
+  .tgroup { display:flex; gap:12px; align-items:flex-end; }
+  .tbtn { pointer-events:auto; width:78px; height:78px; border-radius:50%; border:4px solid var(--ink); background:rgba(255,248,236,.82); font-size:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 rgba(74,47,85,.3); font-family:inherit; color:var(--ink); padding:0; }
+  .tbtn.big { width:96px; height:96px; background:rgba(255,216,77,.9); font-size:44px; }
+  .tbtn.small { width:66px; height:66px; font-size:30px; }
+  .tbtn.down { transform:translateY(4px) scale(.96); box-shadow:none; background:var(--pink); }
+
+  /* Overlays */
+  .overlay { position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:16px; text-align:center;
+    background:linear-gradient(#8fd3ff,#e9f8ff 60%,#b9f0b0); overflow:auto; }
+  .overlay.on { display:flex; }
+  .overlay.glass { background:rgba(74,47,85,.45); backdrop-filter:blur(3px); }
+  .card { background:var(--cream); border:5px solid var(--ink); border-radius:32px; padding:22px 26px; box-shadow:0 10px 0 rgba(74,47,85,.3); max-width:min(92vw,640px); }
+  h1 { font-size:clamp(34px,7vw,64px); margin:0; line-height:1.05; color:var(--pink-d); text-shadow:0 4px 0 #fff, 0 7px 0 rgba(74,47,85,.2); text-wrap:balance; }
+  h2 { font-size:clamp(26px,5vw,40px); margin:0 0 12px; text-wrap:balance; }
+  .btn { font-family:inherit; font-weight:700; font-size:clamp(22px,4vw,30px); color:var(--ink); background:var(--yellow); border:4px solid var(--ink); border-radius:999px; padding:10px 30px; cursor:pointer; box-shadow:0 6px 0 var(--ink); margin:8px 6px; }
+  .btn:active { transform:translateY(5px); box-shadow:0 1px 0 var(--ink); }
+  .btn.pinkb { background:var(--pink); color:#fff; }
+  .btn.mintb { background:var(--mint); }
+  .btn.sm { font-size:20px; padding:8px 20px; }
+  .title-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .title-hero { height:min(38vh,260px); filter:drop-shadow(0 8px 0 rgba(74,47,85,.18)); animation:bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform:translateY(-10px) rotate(-2deg); } }
+  .keys { display:flex; gap:8px 16px; flex-wrap:wrap; justify-content:center; font-size:16px; margin-top:6px; opacity:.9; }
+  .keys b { background:#fff; border:2px solid var(--ink); border-radius:8px; padding:1px 8px; margin-right:4px; box-shadow:0 2px 0 var(--ink); }
+  .levels { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:6px 0 10px; }
+  .lvl { width:160px; border:4px solid var(--ink); border-radius:24px; padding:12px 8px; cursor:pointer; font-family:inherit; color:var(--ink); box-shadow:0 6px 0 var(--ink); background:#fff; }
+  .lvl:active { transform:translateY(5px); box-shadow:0 1px 0 var(--ink); }
+  .lvl .ico { font-size:52px; line-height:1.1; }
+  .lvl .nm { font-weight:700; font-size:19px; }
+  .lvl .st { font-size:22px; letter-spacing:2px; }
+  .lvl.locked { filter:grayscale(.9); opacity:.6; cursor:default; }
+  .bigstars { font-size:clamp(46px,10vw,72px); letter-spacing:6px; margin:4px 0; }
+  .bigstars span { display:inline-block; animation:pop .5s backwards cubic-bezier(.3,1.8,.5,1); }
+  .bigstars span:nth-child(2) { animation-delay:.25s; } .bigstars span:nth-child(3) { animation-delay:.5s; }
+  .bigstars .off { filter:grayscale(1); opacity:.3; }
+  @keyframes pop { from { transform:scale(0) rotate(-40deg); } }
+  .win-hero { height:min(26vh,170px); margin-bottom:-6px; animation:bob 1s ease-in-out infinite; }
+  .count { font-size:24px; font-weight:700; margin-bottom:6px; }
+  .pill.eco { background:#d9f7e4; display:flex; align-items:center; gap:6px; font-size:19px; }
+  .ecobar { display:inline-block; width:74px; height:14px; border:2.5px solid var(--ink); border-radius:999px; background:#fff; overflow:hidden; }
+  #ecoFill { display:block; height:100%; width:0; background:#4fc977; transition:width .4s; }
+  .tbtn.help { background:rgba(123,224,195,.92); }
+  .sub { font-size:clamp(18px,3.4vw,26px); font-weight:700; background:var(--cream); border:3px solid var(--ink); border-radius:999px; padding:2px 18px; }
+  .card.mission { display:flex; align-items:center; gap:14px; text-align:left; }
+  .mission-hero { height:min(40vh,230px); flex:none; }
+  .mission-body h2 { font-size:clamp(22px,4vw,32px); }
+  .mrow { display:flex; align-items:center; gap:10px; font-size:clamp(16px,2.6vw,20px); font-weight:500; padding:4px 0; }
+  .mrow .mi { font-size:28px; width:38px; text-align:center; } .mrow .mt { flex:1; } .mrow .mn { font-weight:700; background:var(--mint); border:2px solid var(--ink); border-radius:999px; padding:0 10px; }
+  .mission-body .btn { margin:12px 0 0; }
+  .tip { font-size:18px; margin-bottom:6px; }
+  @media (max-width:560px) { .card.mission { flex-direction:column; text-align:center; } .mission-hero { height:120px; } }
+  .gpfocus { outline:5px solid #ff7fb6; outline-offset:4px; transform:scale(1.06); }
+  @media (prefers-reduced-motion: reduce) { .title-hero, .win-hero, .bigstars span { animation:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="game"></canvas></div>
+
+<div id="hud">
+  <div class="hud-left">
+    <div class="pill" id="hearts"></div>
+    <div class="pill">⭐ <span id="stars">0</span></div>
+    <div class="pill eco">🌍 <span class="ecobar"><span id="ecoFill"></span></span> <span id="eco">0/0</span></div>
+  </div>
+  <div class="hud-right">
+    <div class="pill" id="lvlName"></div>
+    <button class="hbtn" id="btnMute" aria-label="Sonido">🔊</button>
+    <button class="hbtn" id="btnPause" aria-label="Pausa">⏸</button>
+  </div>
+</div>
+
+<div id="touch">
+  <div class="tgroup">
+    <button class="tbtn" data-k="left" aria-label="Izquierda">◀</button>
+    <button class="tbtn" data-k="right" aria-label="Derecha">▶</button>
+  </div>
+  <div class="tgroup">
+    <button class="tbtn small" data-k="down" aria-label="Agacharse">⬇</button>
+    <button class="tbtn small help" data-k="wave" aria-label="Ayudar">✋</button>
+    <button class="tbtn big" data-k="jump" aria-label="Saltar">⬆</button>
+  </div>
+</div>
+
+<div class="overlay on" id="scrTitle">
+  <div class="title-wrap">
+    <h1 id="gameTitle">La Aventura de Mandy</h1>
+    <div class="sub">¡Cuidemos el planeta! 🌍</div>
+    <img class="title-hero" src="assets/hug.png" alt="">
+    <button class="btn pinkb" id="btnPlay">▶ ¡Jugar!</button>
+    <div class="keys" id="keysHelp">
+      <span><b>← →</b>caminar</span><span><b>Espacio</b>saltar</span><span><b>↓</b>agacharse</span><span><b>H</b>ayudar ✋</span><span><b>🎮</b>¡también con control!</span>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="scrSelect">
+  <div class="card">
+    <h2>¿A dónde vamos?</h2>
+    <div class="levels" id="levels"></div>
+    <button class="btn sm mintb" id="btnBack">◀ Volver</button>
+  </div>
+</div>
+
+<div class="overlay glass" id="scrIntro">
+  <div class="card mission">
+    <img class="mission-hero" src="assets/point.png" alt="">
+    <div class="mission-body">
+      <h2 id="introTitle">¡Necesitan tu ayuda!</h2>
+      <div id="introList"></div>
+      <button class="btn pinkb" id="btnGo">¡Vamos! ▶</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay glass" id="scrPause">
+  <div class="card">
+    <h2>Pausa</h2>
+    <button class="btn pinkb" id="btnResume">▶ Seguir</button><br>
+    <button class="btn sm" id="btnRestart">↻ Otra vez</button>
+    <button class="btn sm mintb" id="btnMenu">🏠 Niveles</button>
+  </div>
+</div>
+
+<div class="overlay glass" id="scrWin">
+  <div class="card">
+    <img class="win-hero" src="assets/hug.png" alt="">
+    <h2 id="winTitle">¡Lo lograste!</h2>
+    <div class="bigstars" id="winStars"></div>
+    <div class="count" id="winCount"></div>
+    <div class="tip" id="winTip"></div>
+    <button class="btn pinkb" id="btnNext">Siguiente ▶</button><br>
+    <button class="btn sm" id="btnAgain">↻ Otra vez</button>
+    <button class="btn sm mintb" id="btnMenu2">🏠 Niveles</button>
+  </div>
+</div>
+
+<script src="assets/voz2/lista.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

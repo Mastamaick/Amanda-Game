@@ -1,0 +1,80 @@
+[
+ {
+  "keys": [
+   "en_bunny",
+   "en_cat",
+   "en_dog",
+   "en_bird",
+   "en_turtle",
+   "en_duck",
+   "en_squirrel",
+   "en_frog",
+   "en_hedgehog",
+   "en_fox",
+   "en_deer",
+   "en_owl",
+   "en_cow",
+   "en_pig",
+   "en_lamb"
+  ],
+  "text": "Bunny! <break time=\"0.7s\" /> Bun... ny. <break time=\"2.5s\" /> Cat! <break time=\"0.7s\" /> Cat. <break time=\"2.5s\" /> Dog! <break time=\"0.7s\" /> Dog. <break time=\"2.5s\" /> Bird! <break time=\"0.7s\" /> Bird. <break time=\"2.5s\" /> Turtle! <break time=\"0.7s\" /> Tur... tle. <break time=\"2.5s\" /> Duck! <break time=\"0.7s\" /> Duck. <break time=\"2.5s\" /> Squirrel! <break time=\"0.7s\" /> Squir... rel. <break time=\"2.5s\" /> Frog! <break time=\"0.7s\" /> Frog. <break time=\"2.5s\" /> Hedgehog! <break time=\"0.7s\" /> Hedge... hog. <break time=\"2.5s\" /> Fox! <break time=\"0.7s\" /> Fox. <break time=\"2.5s\" /> Deer! <break time=\"0.7s\" /> Deer. <break time=\"2.5s\" /> Owl! <break time=\"0.7s\" /> Owl. <break time=\"2.5s\" /> Cow! <break time=\"0.7s\" /> Cow. <break time=\"2.5s\" /> Pig! <break time=\"0.7s\" /> Pig. <break time=\"2.5s\" /> Lamb! <break time=\"0.7s\" /> Lamb."
+ },
+ {
+  "keys": [
+   "en_chick",
+   "en_hen",
+   "en_foal",
+   "en_goat",
+   "en_llama",
+   "en_beaver",
+   "en_raccoon",
+   "en_mouse",
+   "en_chinchilla",
+   "en_sunflower",
+   "en_tulip",
+   "en_daisy",
+   "en_rose",
+   "en_butterfly"
+  ],
+  "text": "Chick! <break time=\"0.7s\" /> Chick. <break time=\"2.5s\" /> Hen! <break time=\"0.7s\" /> Hen. <break time=\"2.5s\" /> Horse! <break time=\"0.7s\" /> Horse. <break time=\"2.5s\" /> Goat! <break time=\"0.7s\" /> Goat. <break time=\"2.5s\" /> Llama! <break time=\"0.7s\" /> Lla... ma. <break time=\"2.5s\" /> Beaver! <break time=\"0.7s\" /> Bea... ver. <break time=\"2.5s\" /> Raccoon! <break time=\"0.7s\" /> Rac... coon. <break time=\"2.5s\" /> Mouse! <break time=\"0.7s\" /> Mouse. <break time=\"2.5s\" /> Chinchilla! <break time=\"0.7s\" /> Chin... chil... la. <break time=\"2.5s\" /> Sunflower! <break time=\"0.7s\" /> Sun... flow... er. <break time=\"2.5s\" /> Tulip! <break time=\"0.7s\" /> Tu... lip. <break time=\"2.5s\" /> Daisy! <break time=\"0.7s\" /> Dai... sy. <break time=\"2.5s\" /> Rose! <break time=\"0.7s\" /> Rose. <break time=\"2.5s\" /> Butterfly! <break time=\"0.7s\" /> But... ter... fly."
+ },
+ {
+  "keys": [
+   "en_recycle",
+   "en_water",
+   "en_plant",
+   "en_pickup",
+   "en_greatjob",
+   "en_hello",
+   "ef_bunny",
+   "ef_cat",
+   "ef_dog",
+   "ef_bird",
+   "ef_turtle",
+   "ef_duck",
+   "ef_squirrel",
+   "ef_frog",
+   "ef_hedgehog"
+  ],
+  "text": "Recycle! <break time=\"2.5s\" /> Water the flower! <break time=\"2.5s\" /> Plant a tree! <break time=\"2.5s\" /> Pick it up! <break time=\"2.5s\" /> Great job! <break time=\"2.5s\" /> Hello! <break time=\"2.5s\" /> Can you find the bunny? <break time=\"2.5s\" /> Can you find the cat? <break time=\"2.5s\" /> Can you find the dog? <break time=\"2.5s\" /> Can you find the bird? <break time=\"2.5s\" /> Can you find the turtle? <break time=\"2.5s\" /> Can you find the duck? <break time=\"2.5s\" /> Can you find the squirrel? <break time=\"2.5s\" /> Can you find the frog? <break time=\"2.5s\" /> Can you find the hedgehog?"
+ },
+ {
+  "keys": [
+   "ef_fox",
+   "ef_deer",
+   "ef_cow",
+   "ef_pig",
+   "ef_lamb",
+   "ef_chick",
+   "ef_hen",
+   "ef_foal",
+   "ef_goat",
+   "ef_llama",
+   "ef_beaver",
+   "ef_raccoon",
+   "ef_mouse",
+   "ef_chinchilla"
+  ],
+  "text": "Can you find the fox? <break time=\"2.5s\" /> Can you find the deer? <break time=\"2.5s\" /> Can you find the cow? <break time=\"2.5s\" /> Can you find the pig? <break time=\"2.5s\" /> Can you find the lamb? <break time=\"2.5s\" /> Can you find the chick? <break time=\"2.5s\" /> Can you find the hen? <break time=\"2.5s\" /> Can you find the horse? <break time=\"2.5s\" /> Can you find the goat? <break time=\"2.5s\" /> Can you find the llama? <break time=\"2.5s\" /> Can you find the beaver? <break time=\"2.5s\" /> Can you find the raccoon? <break time=\"2.5s\" /> Can you find the mouse? <break time=\"2.5s\" /> Can you find the chinchilla?"
+ }
+]
