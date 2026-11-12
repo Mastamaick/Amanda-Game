@@ -20,6 +20,7 @@ const cv = document.getElementById('game'), ctx = cv.getContext('2d');
 let VIEW_W = 960, RS = 1;
 function resize() {
   const w = innerWidth, h = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+  if (!(w > 0 && h > 0)) return; // ventana oculta o sin tamaño todavía (evita la cámara NaN)
   const sc = Math.min(h / VIEW_H, w / 600);
   VIEW_W = Math.min(w / sc, 1500);
   cv.style.width = VIEW_W * sc + 'px'; cv.style.height = VIEW_H * sc + 'px';
