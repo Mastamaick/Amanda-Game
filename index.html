@@ -86,6 +86,12 @@
   #ecoFill { display:block; height:100%; width:0; background:#4fc977; transition:width .4s; }
   .tbtn.help { background:rgba(123,224,195,.92); }
   .sub { font-size:clamp(18px,3.4vw,26px); font-weight:700; background:var(--cream); border:3px solid var(--ink); border-radius:999px; padding:2px 18px; }
+  #padRows { display:grid; grid-template-columns:auto auto auto; gap:8px 14px; align-items:center; justify-content:center; margin:10px 0; font-size:clamp(17px,2.6vw,22px); }
+  #padRows .pv { font-weight:700; min-width:120px; background:#fff; border:3px solid var(--ink); border-radius:14px; padding:4px 10px; }
+  #padRows .pv.wait { background:var(--yellow); animation:blink .6s infinite alternate; }
+  @keyframes blink { to { opacity:.45; } }
+  .padhelp, .padlive { margin:6px 0; font-size:clamp(14px,2.2vw,18px); }
+  .padlive { color:#7a5b86; min-height:1.4em; }
   .card.mission { display:flex; align-items:center; gap:14px; text-align:left; }
   .mission-hero { height:min(40vh,230px); flex:none; }
   .mission-body h2 { font-size:clamp(22px,4vw,32px); }
@@ -131,7 +137,8 @@
     <h1 id="gameTitle">La Aventura de Mandy</h1>
     <div class="sub">¡Cuidemos el planeta! 🌍</div>
     <img class="title-hero" src="assets/hug.png" alt="">
-    <button class="btn pinkb" id="btnPlay">▶ ¡Jugar!</button>
+    <button class="btn pinkb" id="btnPlay">▶ ¡Jugar!</button><br>
+    <button class="btn sm mintb" id="btnPadT">🎮 Botones del control</button>
     <div class="keys" id="keysHelp">
       <span><b>← →</b>caminar</span><span><b>Espacio</b>saltar</span><span><b>↓</b>agacharse</span><span><b>H</b>ayudar ✋</span><span><b>G</b>saludar 👋</span><span><b>🎮</b>¡también con control!</span>
     </div>
@@ -162,7 +169,19 @@
     <h2>Pausa</h2>
     <button class="btn pinkb" id="btnResume">▶ Seguir</button><br>
     <button class="btn sm" id="btnRestart">↻ Otra vez</button>
-    <button class="btn sm mintb" id="btnMenu">🏠 Niveles</button>
+    <button class="btn sm mintb" id="btnMenu">🏠 Niveles</button><br>
+    <button class="btn sm" id="btnPadP">🎮 Botones del control</button>
+  </div>
+</div>
+
+<div class="overlay glass" id="scrPad">
+  <div class="card">
+    <h2>🎮 Botones del control</h2>
+    <p class="padhelp">Toca <b>Cambiar</b> y luego presiona en el control el botón que quieres usar.</p>
+    <div id="padRows"></div>
+    <p class="padlive" id="padLive">Conecta el control y presiona un botón…</p>
+    <button class="btn sm" id="btnPadAuto">↺ Automático</button>
+    <button class="btn sm mintb" id="btnPadBack">◀ Volver</button>
   </div>
 </div>
 
@@ -180,7 +199,7 @@
 </div>
 
 <!-- subir el número de versión (?v=) en cada cambio para que la tablet no use una copia vieja -->
-<script src="assets/voz2/lista.js?v=5"></script>
-<script src="game.js?v=5"></script>
+<script src="assets/voz2/lista.js?v=7"></script>
+<script src="game.js?v=7"></script>
 </body>
 </html>

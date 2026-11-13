@@ -216,11 +216,19 @@ document.addEventListener('contextmenu', e => { if (isTouch) e.preventDefault();
 
 /* ---------------- Control USB (Gamepad) ----------------
    Cruceta o palanca = caminar / agacharse · Start = pausa.
-   PlayStation: ✕ = saltar · □ = ayudar ✋ · △ = saludar 👋  (Xbox: A saltar · X ayudar · Y saludar).
+   PlayStation: ✕ = saltar · ○ (o □) = ayudar ✋ · △ = saludar 👋.
+   Con mapeo "standard" (DualShock 4/5, Xbox): 0=✕/A 1=○/B 2=□/X 3=△/Y.
+   Controles PS clásicos con adaptador USB (sin mapeo): 0=△ 1=○ 2=✕ 3=□ 8=Select 9=Start.
+   Abrir el juego con ?pad muestra qué número envía cada botón. */
+const PADMAP = { std: { jump: [0], wave: [1, 2], greet: [3], start: [9, 8] }, ps1: { jump: [2], wave: [1, 3], greet: [0], start: [9, 8] } };
+const padDebug = /[?&]pad/.test(location.search);
+/*
    En los menús: cruceta para elegir y A para aceptar. */
 const pad = { left: false, right: false, down: false, up: false, jump: false, wave: false, greet: false, start: false }, padPrev = {};
 let padFocus = 0, padSeen = false;
+let rawNow = new Set(), rawPrev = new Set(), padStd = false, padCapture = null, padFrom = 'title';
 function readPad() {
+  rawPrev = rawNow; rawNow = new Set();
   const gps = navigator.getGamepads ? navigator.getGamepads() : [];
   const now = { left: false, right: false, down: false, up: false, jump: false, wave: false, greet: false, start: false };
   for (const gp of gps) {
@@ -233,13 +241,23 @@ function readPad() {
       const d = Math.round((ax[9] + 1) / 0.2857);
       if (d === 0 || d === 1 || d === 7) now.up = true; if (d >= 1 && d <= 3) now.right = true; if (d >= 3 && d <= 5) now.down = true; if (d >= 5 && d <= 7) now.left = true;
     }
-    now.jump = now.jump || b(0); now.wave = now.wave || b(2); now.greet = now.greet || b(3); now.start = now.start || b(9) || b(8);
+    const m = save.pad || (gp.mapping === 'standard' ? PADMAP.std : PADMAP.ps1), any = l => (l || []).some(b);
+    gp.buttons.forEach((x, i) => { if (x.pressed || x.value > 0.5) rawNow.add(i); }); padStd = gp.mapping === 'standard';
+    now.jump = now.jump || any(m.jump); now.wave = now.wave || any(m.wave); now.greet = now.greet || any(m.greet); now.start = now.start || any(m.start);
+    if (padDebug) { const on = gp.buttons.map((x, i) => (x.pressed || x.value > 0.5) ? i : -1).filter(i => i >= 0); window.__padInfo = (gp.mapping || 'sin mapeo') + ' · botones: ' + (on.join(', ') || '—') + ' · ' + gp.id.slice(0, 40); }
   }
   return now;
 }
+let padBox = null;
 function pollPad() {
   const now = readPad(), edge = k => now[k] && !padPrev[k];
+  if (padDebug) {
+    if (!padBox) { padBox = document.createElement('div'); padBox.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;background:#4a2f55;color:#fff;font:16px monospace;padding:6px 10px;border-radius:8px;pointer-events:none'; document.body.appendChild(padBox); }
+    padBox.textContent = '🎮 ' + (window.__padInfo || 'presiona un botón del control') + ' → ' + ['jump', 'wave', 'greet', 'start'].filter(k => now[k]).map(k => ({ jump: 'saltar', wave: 'ayudar', greet: 'saludar', start: 'start' })[k]).join(' ');
+  }
   if (!padSeen && Object.values(now).some(v => v)) { padSeen = true; initAudio(); }
+  if (state === 'pad') padScreenTick();
+  if (padCapture) { padSnapshot(now); return; }
   if (state === 'play') {
     for (const k of ['left', 'right', 'down', 'jump', 'wave', 'greet']) { if (now[k] && !padPrev[k]) press(k); else if (!now[k] && padPrev[k]) release(k); }
     if (edge('up')) press('jump'); else if (!now.up && padPrev.up && !now.jump) release('jump');
@@ -1223,7 +1241,7 @@ const $ = id => document.getElementById(id);
 function setState(s) {
   state = s;
   $('scrTitle').classList.toggle('on', s === 'title'); $('scrSelect').classList.toggle('on', s === 'select');
-  $('scrPause').classList.toggle('on', s === 'pause'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
+  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
   const inGame = s === 'play' || s === 'pause' || s === 'win' || s === 'intro';
   $('hud').classList.toggle('on', inGame); $('touch').classList.toggle('on', isTouch && s === 'play');
   musWant = inGame ? 'game' : 'menu'; syncMusic();
@@ -1268,6 +1286,34 @@ $('btnResume').onclick = resume;
 $('btnRestart').onclick = $('btnAgain').onclick = () => startLevel(L.idx);
 $('btnMenu').onclick = $('btnMenu2').onclick = showSelect;
 $('btnNext').onclick = () => startLevel(L.idx + 1);
+
+/* ---------- Pantalla para elegir los botones del control ---------- */
+const PAD_ACTS = [['jump', '⬆ Saltar'], ['wave', '✋ Ayudar'], ['greet', '👋 Saludar'], ['start', '⏸ Pausa']];
+function padSym(i) { const s = padStd ? { 0: '✕', 1: '○', 2: '□', 3: '△', 9: 'Start', 8: 'Select' } : { 0: '△', 1: '○', 2: '✕', 3: '□', 9: 'Start', 8: 'Select' }; return (s[i] ? s[i] + ' ' : '') + '(' + i + ')'; }
+function padMap() { return save.pad || (padStd ? PADMAP.std : PADMAP.ps1); }
+function paintPadRows() {
+  const m = padMap();
+  $('padRows').innerHTML = PAD_ACTS.map(([k, n]) => '<span>' + n + '</span><span class="pv' + (padCapture === k ? ' wait' : '') + '">' + (padCapture === k ? 'presiona…' : (m[k] || []).map(padSym).join(' · ') || '—') + '</span><button class="btn sm" data-pk="' + k + '">Cambiar</button>').join('');
+  $('padRows').querySelectorAll('[data-pk]').forEach(b => b.onclick = () => { padCapture = b.dataset.pk; rawPrev = new Set(rawNow); paintPadRows(); });
+}
+function padSnapshot(now) { for (const k in now) padPrev[k] = now[k]; }
+function padScreenTick() {
+  const on = [...rawNow];
+  $('padLive').textContent = on.length ? 'Estás presionando: ' + on.map(padSym).join(', ') : (navigator.getGamepads && [...navigator.getGamepads()].some(g => g) ? 'Control conectado ✔ — presiona un botón para ver su número' : 'Conecta el control y presiona un botón…');
+  if (padCapture) {
+    const fresh = on.find(i => !rawPrev.has(i));
+    if (fresh !== undefined) {
+      const m = JSON.parse(JSON.stringify(padMap()));
+      for (const k in m) m[k] = (m[k] || []).filter(i => i !== fresh);
+      m[padCapture] = [fresh]; save.pad = m; persist(); padCapture = null; play('star', 0.3); paintPadRows();
+    }
+  }
+}
+function openPad(from) { padFrom = from; padCapture = null; setState('pad'); paintPadRows(); }
+$('btnPadT').onclick = () => { initAudio(); openPad('title'); };
+$('btnPadP').onclick = () => openPad('pause');
+$('btnPadAuto').onclick = () => { delete save.pad; persist(); padCapture = null; paintPadRows(); };
+$('btnPadBack').onclick = () => { padCapture = null; setState(padFrom); };
 function paintMute() { $('btnMute').textContent = save.muted ? '🔇' : '🔊'; }
 $('btnMute').onclick = () => { save.muted = !save.muted; persist(); paintMute(); initAudio(); syncMusic(); $('btnMute').blur(); };
 paintMute();

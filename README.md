@@ -13,7 +13,7 @@ node servidor.js
 Luego abrir http://localhost:8123 en el navegador.
 
 - **Teclado:** flechas para moverse, espacio para saltar, H para ayudar y G para saludar.
-- **Control USB (PlayStation):** cruceta o palanca para moverse, ✕ saltar, □ ayudar (recoger, regar, plantar, acariciar), △ saludar, Start pausa. En Xbox: A, X e Y.
+- **Control USB (PlayStation):** cruceta o palanca para moverse, ✕ saltar, ○ ayudar (recoger, regar, plantar, acariciar), △ saludar, Start pausa. Si un control usa otros botones, se cambian en el menú **🎮 Botones del control** (pantalla de inicio o pausa).
 
 ## Niveles
 
