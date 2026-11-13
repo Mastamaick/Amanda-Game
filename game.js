@@ -21,13 +21,31 @@ let VIEW_W = 960, RS = 1;
 function resize() {
   const w = innerWidth, h = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
   if (!(w > 0 && h > 0)) return; // ventana oculta o sin tamaño todavía (evita la cámara NaN)
-  const sc = Math.min(h / VIEW_H, w / 600);
-  VIEW_W = Math.min(w / sc, 1500);
+  // Vertical (celular o tablet parados): el juego arriba y abajo queda espacio para los controles
+  const portrait = h > w * 1.08;
+  document.body.classList.toggle('portrait', portrait);
+  let sc;
+  if (portrait) {
+    const top = h < 700 ? 56 : 66, room = h - top - (w < 600 ? 250 : 280);
+    sc = Math.min(w / 480, room / VIEW_H); VIEW_W = Math.min(w / sc, 1500);
+    document.body.style.setProperty('--gt', top + 'px');
+    document.body.style.setProperty('--gb', Math.round(top + VIEW_H * sc - 2) + 'px');
+  } else { sc = Math.min(h / VIEW_H, w / 600); VIEW_W = Math.min(w / sc, 1500); }
+  setTimeout(rotTipCheck, 0);
   cv.style.width = VIEW_W * sc + 'px'; cv.style.height = VIEW_H * sc + 'px';
   cv.width = Math.round(VIEW_W * sc * dpr); cv.height = Math.round(VIEW_H * sc * dpr);
   RS = sc * dpr;
 }
-addEventListener('resize', resize); resize();
+addEventListener('resize', resize); addEventListener('orientationchange', () => setTimeout(resize, 200)); resize();
+// Aviso "gira el teléfono": en un aparato táctil parado, al entrar a un nivel. Se puede elegir jugar en vertical.
+let vertOK = false;
+function rotTipCheck() {
+  const el = document.getElementById('rotTip'); if (!el) return;
+  const touch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  const show = touch && !vertOK && document.body.classList.contains('portrait') && (state === 'intro' || state === 'select');
+  el.classList.toggle('on', show);
+}
+document.getElementById('btnVertical').onclick = () => { vertOK = true; rotTipCheck(); };
 
 /* ---------------- Sprites del personaje ----------------
    OLD: hoja original (personaje de pie mide 310 px). NEW: hojas nuevas (445 px).
@@ -1328,7 +1346,7 @@ function setState(s) {
   $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
   const inGame = s === 'play' || s === 'pause' || s === 'win' || s === 'intro';
   $('hud').classList.toggle('on', inGame); $('touch').classList.toggle('on', isTouch && s === 'play');
-  musWant = inGame ? 'game' : 'menu'; syncMusic();
+  musWant = inGame ? 'game' : 'menu'; syncMusic(); rotTipCheck();
 }
 function pause() { if (state === 'play') { setState('pause'); for (const k in keys) keys[k] = false; } }
 function resume() { setState('play'); last = performance.now(); }
