@@ -167,10 +167,10 @@ const sfx = {
 };
 
 /* ---------------- Controles ---------------- */
-const keys = { left: false, right: false, down: false, jump: false, wave: false };
-let jumpPressed = false, wavePressed = false;   // "wave" = botón de ayudar (✋)
-const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowDown: 'down', KeyS: 'down', ArrowUp: 'jump', KeyW: 'jump', Space: 'jump', KeyH: 'wave', KeyX: 'wave', KeyE: 'wave', Enter: 'wave' };
-function press(k) { if (!keys[k]) { if (k === 'jump') jumpPressed = true; if (k === 'wave') wavePressed = true; } keys[k] = true; }
+const keys = { left: false, right: false, down: false, jump: false, wave: false, greet: false };
+let jumpPressed = false, wavePressed = false, greetPressed = false;   // "greet" = saludar 👋   // "wave" = botón de ayudar (✋)
+const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowDown: 'down', KeyS: 'down', ArrowUp: 'jump', KeyW: 'jump', Space: 'jump', KeyH: 'wave', KeyX: 'wave', KeyE: 'wave', Enter: 'wave', KeyG: 'greet' };
+function press(k) { if (!keys[k]) { if (k === 'jump') jumpPressed = true; if (k === 'wave') wavePressed = true; if (k === 'greet') greetPressed = true; } keys[k] = true; }
 function release(k) { keys[k] = false; }
 addEventListener('keydown', e => {
   initAudio();
@@ -215,13 +215,14 @@ document.addEventListener('contextmenu', e => { if (isTouch) e.preventDefault();
 })();
 
 /* ---------------- Control USB (Gamepad) ----------------
-   Cruceta o palanca = caminar / agacharse · A o B = saltar · X o Y = ayudar ✋ · Start = pausa.
+   Cruceta o palanca = caminar / agacharse · Start = pausa.
+   PlayStation: ✕ = saltar · □ = ayudar ✋ · △ = saludar 👋  (Xbox: A saltar · X ayudar · Y saludar).
    En los menús: cruceta para elegir y A para aceptar. */
-const pad = { left: false, right: false, down: false, up: false, jump: false, wave: false, start: false }, padPrev = {};
+const pad = { left: false, right: false, down: false, up: false, jump: false, wave: false, greet: false, start: false }, padPrev = {};
 let padFocus = 0, padSeen = false;
 function readPad() {
   const gps = navigator.getGamepads ? navigator.getGamepads() : [];
-  const now = { left: false, right: false, down: false, up: false, jump: false, wave: false, start: false };
+  const now = { left: false, right: false, down: false, up: false, jump: false, wave: false, greet: false, start: false };
   for (const gp of gps) {
     if (!gp) continue;
     const b = i => gp.buttons[i] && (gp.buttons[i].pressed || gp.buttons[i].value > 0.5), ax = gp.axes;
@@ -232,7 +233,7 @@ function readPad() {
       const d = Math.round((ax[9] + 1) / 0.2857);
       if (d === 0 || d === 1 || d === 7) now.up = true; if (d >= 1 && d <= 3) now.right = true; if (d >= 3 && d <= 5) now.down = true; if (d >= 5 && d <= 7) now.left = true;
     }
-    now.jump = now.jump || b(0) || b(1); now.wave = now.wave || b(2) || b(3) || b(5) || b(4); now.start = now.start || b(9) || b(8);
+    now.jump = now.jump || b(0); now.wave = now.wave || b(2); now.greet = now.greet || b(3); now.start = now.start || b(9) || b(8);
   }
   return now;
 }
@@ -240,7 +241,7 @@ function pollPad() {
   const now = readPad(), edge = k => now[k] && !padPrev[k];
   if (!padSeen && Object.values(now).some(v => v)) { padSeen = true; initAudio(); }
   if (state === 'play') {
-    for (const k of ['left', 'right', 'down', 'jump', 'wave']) { if (now[k] && !padPrev[k]) press(k); else if (!now[k] && padPrev[k]) release(k); }
+    for (const k of ['left', 'right', 'down', 'jump', 'wave', 'greet']) { if (now[k] && !padPrev[k]) press(k); else if (!now[k] && padPrev[k]) release(k); }
     if (edge('up')) press('jump'); else if (!now.up && padPrev.up && !now.jump) release('jump');
     if (edge('start')) pause();
   } else {
@@ -519,7 +520,7 @@ function hitBlock(bl) {
 function startLevel(i) {
   shutUp(); cards = []; followers = []; said = {};
   L = makeLevel(i); P = newPlayer(2 * T, G); cam.x = 0; parts = []; time = 0; hearts = MAX_HEARTS; starsGot = 0; ecoDone = 0; winT = 0; winShown = false; toast = null;
-  jumpPressed = wavePressed = false; for (const k in keys) keys[k] = false;
+  jumpPressed = wavePressed = greetPressed = false; for (const k in keys) keys[k] = false;
   document.getElementById('lvlName').textContent = (i + 1) + ' · ' + L.name;
   updateHud(); showIntro();
 }
@@ -624,6 +625,10 @@ function step(dt) {
       else if (tg) { p.act = { type: tg.type, o: tg.o, t: 0, done: false }; p.face = tg.o.x >= p.x + p.w / 2 ? 1 : -1; if (tg.type === 'water' || tg.type === 'wmush') play('water', 0.7); }
       else { p.act = { type: 'wave', t: 0 }; sfx.wave(); chat(['en_hello'], 0.5, 5); }
     }
+  }
+  if (greetPressed) { // saludar: siempre saluda con la mano, haya o no algo cerca
+    greetPressed = false;
+    if (ctl && p.grounded && !p.crouch && !p.act) { p.act = { type: 'wave', t: 0 }; sfx.wave(); chat(['en_hello'], 1, 3); }
   }
   if (p.act) {
     const a = p.act, D = ACT[a.type]; a.t += dt;

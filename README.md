@@ -12,8 +12,8 @@ node servidor.js
 
 Luego abrir http://localhost:8123 en el navegador.
 
-- **Teclado:** flechas para moverse, espacio para saltar y la tecla de acción para recoger, regar, plantar o acariciar.
-- **Control USB:** cualquier control estándar (cruceta o palanca para moverse, A para saltar, X/B para la acción).
+- **Teclado:** flechas para moverse, espacio para saltar, H para ayudar y G para saludar.
+- **Control USB (PlayStation):** cruceta o palanca para moverse, ✕ saltar, □ ayudar (recoger, regar, plantar, acariciar), △ saludar, Start pausa. En Xbox: A, X e Y.
 
 ## Niveles
 
