@@ -50,6 +50,8 @@ const BG = {}; ['garden', 'beach', 'forest', 'farm', 'lake', 'mountain'].forEach
 const FLOWERS = ['sunflower', 'tulip', 'daisy', 'rose'];
 // Español / inglés para enseñar palabras
 const WORDS = { cow: ['Vaquita', 'Cow'], pig: ['Chanchito', 'Pig'], lamb: ['Corderito', 'Lamb'], chick: ['Pollito', 'Chick'], hen: ['Gallina', 'Hen'], foal: ['Caballito', 'Horse'], goat: ['Cabrita', 'Goat'], llama: ['Llama', 'Llama'], beaver: ['Castor', 'Beaver'], raccoon: ['Mapache', 'Raccoon'], mouse: ['Ratoncito', 'Mouse'], chinchilla: ['Chinchilla', 'Chinchilla'], bunny: ['Conejito', 'Bunny'], cat: ['Gatito', 'Cat'], dog: ['Perrito', 'Dog'], bird: ['Pajarito', 'Bird'], turtle: ['Tortuga', 'Turtle'], duck: ['Patito', 'Duck'], squirrel: ['Ardilla', 'Squirrel'], frog: ['Rana', 'Frog'], hedgehog: ['Erizo', 'Hedgehog'], fox: ['Zorrito', 'Fox'], deer: ['Venadito', 'Deer'], owl: ['Búho', 'Owl'], sunflower: ['Girasol', 'Sunflower'], tulip: ['Tulipán', 'Tulip'], daisy: ['Margarita', 'Daisy'], rose: ['Rosa', 'Rose'], butterfly: ['Mariposa', 'Butterfly'] };
+const COLS = { red: ['Rojo', 'Red', '#e8453c', '🔴'], blue: ['Azul', 'Blue', '#3f8fe8', '🔵'], yellow: ['Amarillo', 'Yellow', '#ffd23f', '🟡'], green: ['Verde', 'Green', '#4cc25a', '🟢'], orange: ['Naranja', 'Orange', '#ff9a2e', '🟠'], purple: ['Morado', 'Purple', '#9b5de5', '🟣'], pink: ['Rosado', 'Pink', '#ff7fb6', '🩷'], brown: ['Café', 'Brown', '#9a6537', '🟤'] };
+const NUMS_EN = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
 const FH = { cow: 60, pig: 52, lamb: 54, chick: 42, hen: 54, foal: 66, goat: 58, llama: 74, beaver: 52, raccoon: 54, mouse: 44, chinchilla: 48, bunny: 64, cat: 54, dog: 56, bird: 48, turtle: 44, duck: 54, squirrel: 58, frog: 46, hedgehog: 46, fox: 58, deer: 74 };
 const ready = im => im && (im.getContext || (im.complete && im.naturalWidth));
 // Versión gris (para lo que está triste): se hace con modos de mezcla, sin leer píxeles (funciona abriendo el archivo directo)
@@ -405,6 +407,36 @@ const LEVELS = [
   } },
 ];
 
+/* Tramos extra al final de cada mundo (más tramos y más bichos mientras más avanza).
+   La meta original queda como bandera y la nueva meta va al final. */
+const EXTRA_FRIENDS = { garden: ['bunny', 'duck', 'cat'], beach: ['turtle', 'bird', 'dog', 'duck'], forest: ['squirrel', 'hedgehog', 'fox', 'deer'], farm: ['chick', 'hen', 'pig', 'lamb', 'cow'], lake: ['frog', 'beaver', 'raccoon', 'mouse', 'duck'], mountain: ['llama', 'goat', 'foal', 'chinchilla'] };
+function extendLevel(L, r, idx, x) {
+  const R = rng(4321 + idx * 131), segs = 2 + idx, d = idx;
+  if (L.goal) { L.flags.push({ x: L.goal.x, y: L.goal.y, on: false }); L.goal = null; }
+  const pool = EXTRA_FRIENDS[L.themeName] || ['bunny'];
+  const friendKind = () => pool[Math.floor(R() * pool.length)];
+  const S = [
+    x => { r.ground(x, x + 12); r.walker(x + 1.5, x + 6.5); r.starRow(x + 2, 2.2, 3); r.trash(x + 8); if (d >= 2) { r.hazard(x + 10.2); r.starArc(x + 9.4, 2.2, 3); } return x + 12; },
+    x => { r.plat(x + 1.2, 0, 1.6); r.plat(x + 4.2, 0, 1.6); r.starArc(x + 0.5, 1.5, 6); r.ground(x + 7, x + 15); r.plant(x + 9); r.bin(x + 12.5); if (d >= 3) r.flyer(x + 11); return x + 15; },
+    x => { r.mover(x + 0.3, 0, 3, 3, 0, 5); r.starRow(x + 1, 1.6, 4); r.ground(x + 7, x + 18); r.friend(x + 9, friendKind()); r.trash(x + 12); r.seed(x + 15); if (d >= 1) r.walker(x + 13, x + 17.5); return x + 18; },
+    x => { r.ground(x, x + 4, 1); r.ground(x + 4, x + 8, 2); r.trash(x + 6, 2); r.ground(x + 8, x + 12, 1); r.plant(x + 10, 1); r.star(x + 1, 2.2); r.star(x + 5, 3.2); r.star(x + 9, 2.2); r.ground(x + 12, x + 16); r.bin(x + 14); return x + 16; },
+    x => { r.ground(x, x + 13); r.mush(x + 1.5); r.plat(x + 3, 5, 3); r.starRow(x + 3, 6, 2); r.heart(x + 5, 6); r.trash(x + 8.5); r.friend(x + 11, friendKind()); if (d >= 2) r.flyer(x + 7); return x + 13; },
+    x => { r.ground(x, x + 13); r.log(x + 2, 4); r.starRow(x + 2, 0.6, 4); r.seed(x + 7.5); if (d >= 1) r.walker(x + 9, x + 12.5); else r.trash(x + 10); return x + 13; },
+    x => { r.plat(x + 1, 0, 1); r.starArc(x, 1.4, 3); r.ground(x + 3, x + 14); r.hazard(x + 5.5); r.starArc(x + 4.5, 2.2, 3); r.trash(x + 8.5); r.friend(x + 11.5, friendKind()); if (d >= 4) r.hazard(x + 13.2); return x + 14; },
+  ];
+  // primero tramos fáciles; después se mezclan
+  const order = [0, 5, 1, 2, 4, 3, 6]; for (let i = order.length - 1; i > 3; i--) { const j = 3 + Math.floor(R() * (i - 2)); [order[i], order[j]] = [order[j], order[i]]; }
+  const quizAt = new Set(idx >= 4 ? [Math.floor(segs / 3), Math.floor(segs * 2 / 3)] : [Math.floor(segs / 2)]);
+  const qKinds = ['eng', idx % 2 ? 'add' : 'sub', 'eng'];
+  let qi = 0;
+  for (let i = 0; i < segs; i++) {
+    if (quizAt.has(i)) { r.ground(x, x + 2); r.quiz(x + 2, qKinds[qi++ % qKinds.length]); r.ground(x + 11, x + 13); x += 13; }
+    x = S[order[i % order.length]](x);
+  }
+  r.ground(x, x + 14); r.flag(x + 1); r.trash(x + 4); r.bin(x + 7); r.goal(x + 11);
+  return x + 14;
+}
+
 function makeLevel(idx) {
   const def = LEVELS[idx];
   const L = { idx, name: def.name, theme: THEMES[def.theme], themeName: def.theme, width: def.width * T, solids: [], plats: [], movers: [], stars: [], hearts: [], walkers: [], flyers: [], hazards: [], friends: [], mushes: [], flags: [], signs: [], decor: [], trash: [], bins: [], plants: [], seeds: [], quizzes: [], goal: null, total: 0, amb: { flies: [], bugs: [], gaps: [] } };
@@ -436,7 +468,8 @@ function makeLevel(idx) {
     quiz(x, kind) {
       r.ground(x, x + 9);
       const gate = { x: (x + 7.4) * T, y: -300, w: 0.9 * T, h: G + 300, kind: 'gate', open: 0 };
-      const q = { kind, owl: { x: (x + 0.9) * T, y: G }, gate, state: 'idle', blocks: [], q: null, n: L.quizzes.length, bump: 0, wrongs: 0 };
+      const n = L.quizzes.length, need = idx === 0 && n === 0 ? 1 : idx >= 4 ? 3 : 2; // primer reto del juego: 1 pregunta; después 2, y 3 en los últimos mundos
+      const q = { kind, owl: { x: (x + 0.9) * T, y: G }, gate, state: 'idle', blocks: [], q: null, n, need, got: 0, used: [], bump: 0, wrongs: 0 };
       for (let i = 0; i < 3; i++) { const bl = { x: (x + 2.3 + i * 1.55) * T - 27, y: G - 168, w: 54, h: 54, kind: 'qblock', quiz: q, i, bump: 0, wrong: false, right: false }; q.blocks.push(bl); L.solids.push(bl); }
       L.solids.push(gate); L.quizzes.push(q);
       r.starArc(x + 8.5, 1.6, 3);
@@ -445,7 +478,7 @@ function makeLevel(idx) {
   const b = { o: 0 };
   for (const k in r) b[k] = (x, ...a) => { if (k === 'ground' || k === 'walker') a[0] += b.o; return r[k](x + b.o, ...a); };
   def.build(b);
-  L.width = (def.width + b.o) * T;
+  L.width = extendLevel(L, r, idx, def.width + b.o) * T;
   L.total = L.trash.length + L.plants.length + L.seeds.length + L.friends.length;
   // Decoración automática sobre el suelo (sin tapar las cosas con las que se juega)
   const R = rng(1234 + idx * 77), kinds = L.theme.decor;
@@ -489,50 +522,91 @@ function newPlayer(x, bottom) {
 function wordCard(x, y, pic, es, en) { cards = cards.filter(c => Math.abs(c.x - x) > 10); cards.push({ x, y, pic, es, en, t: 3.2 }); }
 function teach(kind, x, y) {
   const w = WORDS[kind]; if (!w) return; wordCard(x, y, kind, w[0], w[1]);
+  if (FH[kind]) { save.met = save.met || []; if (save.met.indexOf(kind) < 0) { save.met.push(kind); persist(); } }
   said.ei = (said.ei || 0) + 1; speak((said.ei <= 2 ? ['eningles'] : []).concat(['en_' + kind]), true); talkCD = 6;
 }
 
 /* --- Retos del búho --- */
 const ri = n => Math.floor(Math.random() * n);
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = ri(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function pickNew(list, used) { const f = list.filter(k => used.indexOf(k) < 0); const src = f.length ? f : list; return src[ri(src.length)]; }
 function makeQuestion(q) {
-  const lv = L.idx;
-  if (q.kind === 'eng') {
-    const here = L.friends.map(f => f.kind), pool = Object.keys(FH);
-    const ans = here.length ? here[ri(here.length)] : pool[ri(pool.length)];
-    const opts = [ans]; while (opts.length < 3) { const k = pool[ri(pool.length)]; if (opts.indexOf(k) < 0) opts.push(k); }
+  const lv = L.idx, used = L.usedQ || (L.usedQ = []);
+  let kind = q.kind;
+  if (kind === 'eng') { // inglés: animalitos; desde el 2º mundo también números; desde el 3º, colores
+    const kinds = lv === 0 ? ['eng'] : lv === 1 ? ['eng', 'num'] : ['eng', 'num', 'col'];
+    kind = kinds[(q.got + q.n + lv) % kinds.length];
+  } else if (lv >= 2 && q.got > 0) kind = ri(2) ? 'add' : 'sub';
+  if (kind === 'eng') {
+    // sólo animalitos que ya aparecieron antes del búho (o que conoció en otros mundos)
+    const before = L.friends.filter(f => f.x < q.owl.x).map(f => f.kind), met = (save.met || []).filter(k => FH[k]);
+    const known = [...new Set(before.concat(met))];
+    const cands = before.length ? [...new Set(before.concat(lv > 0 ? met : []))] : known.length ? known : Object.keys(FH);
+    const ans = pickNew(cands, used); used.push(ans);
+    const src = known.length > 2 ? known : Object.keys(FH);
+    const opts = [ans]; let t = 0; while (opts.length < 3 && t++ < 99) { const k = (t < 40 ? src : Object.keys(FH))[ri((t < 40 ? src : Object.keys(FH)).length)]; if (opts.indexOf(k) < 0) opts.push(k); }
     return { kind: 'eng', ans, opts: shuffle(opts) };
   }
-  let a, b, ans;
-  if (q.kind === 'add') { const max = lv === 0 ? 5 : 9; a = 1 + ri(max - 1); b = 1 + ri(max - a); ans = a + b; }
-  else { const max = lv < 2 ? 6 : 9; a = 2 + ri(max - 1); b = 1 + ri(a - 1); ans = a - b; }
+  if (kind === 'col') {
+    const all = Object.keys(COLS), ans = pickNew(all, used); used.push(ans);
+    const opts = [ans]; while (opts.length < 3) { const k = all[ri(all.length)]; if (opts.indexOf(k) < 0) opts.push(k); }
+    return { kind: 'col', ans, opts: shuffle(opts) };
+  }
+  if (kind === 'num') {
+    const max = lv < 3 ? 5 : 10, all = []; for (let i = 1; i <= max; i++) all.push(i);
+    const ans = pickNew(all, used); used.push(ans);
+    const opts = [ans]; while (opts.length < 3) { const k = 1 + ri(max); if (opts.indexOf(k) < 0) opts.push(k); }
+    return { kind: 'num', ans, opts: shuffle(opts) };
+  }
+  let a, b, ans, t = 0;
+  do {
+    if (kind === 'add') { const max = lv === 0 ? 5 : lv === 1 ? 7 : 9; a = 1 + ri(max - 1); b = 1 + ri(max - a); ans = a + b; }
+    else { const max = lv < 2 ? 6 : 9; a = 2 + ri(max - 1); b = 1 + ri(a - 1); ans = a - b; }
+  } while (used.indexOf(kind + a + '_' + b) >= 0 && t++ < 40);
+  used.push(kind + a + '_' + b);
   const opts = [ans]; let tries = 0;
   while (opts.length < 3 && tries++ < 50) { const d = ans + (ri(2) ? 1 : -1) * (1 + ri(2)); if (d >= 0 && d <= 10 && opts.indexOf(d) < 0) opts.push(d); }
   while (opts.length < 3) { const d = ri(11); if (opts.indexOf(d) < 0) opts.push(d); }
-  return { kind: q.kind, a, b, ans, opts: shuffle(opts) };
+  return { kind, a, b, ans, opts: shuffle(opts) };
+}
+function wordVoice(Q) { // la palabra sola (para enseñarla)
+  if (Q.kind === 'eng') return ['en_' + Q.ans];
+  if (Q.kind === 'col') return ['col_' + Q.ans];
+  if (Q.kind === 'num') return ['num_' + Q.ans];
+  return VOZ_NUEVA.has('ans_' + Q.ans) ? ['ans_' + Q.ans] : ['n' + Q.ans];
 }
 function questionVoice(Q) {
   if (Q.kind === 'eng') return VOZ_NUEVA.has('ef_' + Q.ans) ? ['ef_' + Q.ans] : ['en_find', 'en_' + Q.ans];
+  if (Q.kind === 'col') return ['fc_find', 'col_' + Q.ans];
+  if (Q.kind === 'num') return ['fn_find', 'num_' + Q.ans];
   const k = (Q.kind === 'add' ? 'qa_' : 'qs_') + Q.a + '_' + Q.b;
   return VOZ_NUEVA.has(k) ? [k] : ['cuanto', 'n' + Q.a, Q.kind === 'add' ? 'mas' : 'menos', 'n' + Q.b];
 }
 function askQuiz(q) {
   q.state = 'ask'; q.Q = makeQuestion(q);
   const v = []; if (!said.puerta) { said.puerta = 1; v.push('q_puerta'); }
-  if (q.kind === 'eng' && !said.busca) { said.busca = 1; v.push('q_busca'); }
+  if (q.Q.kind === 'eng' && !said.busca) { said.busca = 1; v.push('q_busca'); }
   speak(v.concat(questionVoice(q.Q)), true);
 }
 function hitBlock(bl) {
   const q = bl.quiz; bl.bump = 1;
   if (q.state !== 'ask' || bl.wrong) { play('boing', 0.25); return; }
-  if (q.Q.opts[bl.i] === q.Q.ans) {
-    bl.right = true; q.state = 'done'; q.bump = 1;
-    addStars(3, bl.x + bl.w / 2, bl.y); burst(bl.x + bl.w / 2, bl.y - 10, 'heart', 8, '#ff7fb6'); play('win', 0.5);
-    const pr = pick(['p1', 'p2', 'p3', 'p5']);
-    speak(q.kind === 'eng' ? ['en_greatjob', 'en_' + q.Q.ans] : [pr].concat(VOZ_NUEVA.has('ans_' + q.Q.ans) ? ['ans_' + q.Q.ans] : ['n' + q.Q.ans]), true); talkCD = 6;
-    if (q.kind === 'eng') wordCard(bl.x + bl.w / 2, bl.y - 90, q.Q.ans, WORDS[q.Q.ans][0], WORDS[q.Q.ans][1]);
+  const Q = q.Q, en = Q.kind === 'eng' || Q.kind === 'col' || Q.kind === 'num';
+  if (Q.opts[bl.i] === Q.ans) {
+    bl.right = true; q.got++; q.bump = 1;
+    addStars(q.got >= q.need ? 3 : 1, bl.x + bl.w / 2, bl.y); burst(bl.x + bl.w / 2, bl.y - 10, 'heart', 8, '#ff7fb6'); play(q.got >= q.need ? 'win' : 'star', 0.5);
+    speak(en ? ['en_greatjob'].concat(wordVoice(Q)) : [pick(['p1', 'p2', 'p3', 'p5'])].concat(wordVoice(Q)), true); talkCD = 6;
+    if (Q.kind === 'eng') wordCard(bl.x + bl.w / 2, bl.y - 90, Q.ans, WORDS[Q.ans][0], WORDS[Q.ans][1]);
+    if (Q.kind === 'col') wordCard(bl.x + bl.w / 2, bl.y - 90, COLS[Q.ans][3], COLS[Q.ans][0], COLS[Q.ans][1]);
+    if (q.got >= q.need) q.state = 'done'; else { q.state = 'next'; q.nextT = 2.6; }
   } else {
-    bl.wrong = true; q.wrongs++; sfx.hurt(); speak(['e_casi'].concat(questionVoice(q.Q)), true);
+    // equivocada: se muestra cuál era, se dice la respuesta y viene OTRA pregunta (no se puede pasar descartando)
+    bl.wrong = true; q.wrongs++; sfx.hurt();
+    const ok = q.blocks.find(x => Q.opts[x.i] === Q.ans); if (ok) ok.reveal = true;
+    speak(['e_casi'].concat(wordVoice(Q)), true);
+    if (ok && Q.kind === 'eng') wordCard(ok.x + ok.w / 2, ok.y - 90, Q.ans, WORDS[Q.ans][0], WORDS[Q.ans][1]);
+    if (ok && Q.kind === 'col') wordCard(ok.x + ok.w / 2, ok.y - 90, COLS[Q.ans][3], COLS[Q.ans][0], COLS[Q.ans][1]);
+    q.state = 'next'; q.nextT = 3.4;
   }
 }
 function startLevel(i) {
@@ -739,6 +813,10 @@ function updateLife(dt) {
   });
   for (const q of L.quizzes) {
     if (q.state === 'idle' && state === 'play' && cx > q.owl.x - 60) askQuiz(q);
+    if (q.state === 'next' && (q.nextT -= dt) <= 0) {
+      for (const bl of q.blocks) { bl.wrong = bl.right = bl.reveal = false; bl.bump = 1; }
+      q.state = 'ask'; q.Q = makeQuestion(q); speak(questionVoice(q.Q), true);
+    }
     for (const bl of q.blocks) bl.bump = Math.max(0, bl.bump - dt * 4);
     q.bump = Math.max(0, q.bump - dt * 0.8);
     if (q.state === 'done' && q.gate.open < 1) {
@@ -1128,11 +1206,13 @@ function drawQuiz(q) {
   for (const bl of q.blocks) {
     const bx = bl.x, by = bl.y - Math.sin(bl.bump * Math.PI) * 12, cx = bx + bl.w / 2;
     ctx.globalAlpha = bl.wrong ? 0.55 : 1;
-    rr(bx, by, bl.w, bl.h, 12); fs(bl.right ? '#7be07b' : bl.wrong ? '#d8d2dc' : '#ffd84d', 3);
+    if (bl.reveal) { ctx.save(); ctx.globalAlpha = 0.5 + Math.sin(time * 10) * 0.3; rr(bx - 7, by - 7, bl.w + 14, bl.h + 14, 16); fs('#7be07b', 0); ctx.restore(); }
+    rr(bx, by, bl.w, bl.h, 12); fs(bl.right || bl.reveal ? '#7be07b' : bl.wrong ? '#d8d2dc' : '#ffd84d', 3);
     ctx.fillStyle = 'rgba(255,255,255,.5)'; rr(bx + 6, by + 5, bl.w - 12, 8, 4); ctx.fill();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = INK;
     if (q.state === 'idle') { ctx.font = '700 30px Fredoka, sans-serif'; ctx.fillText('?', cx, by + bl.h / 2 + 2 + Math.sin(time * 4 + bl.i) * 2); }
     else if (q.Q.kind === 'eng') { const k = q.Q.opts[bl.i]; drawImg(bl.wrong ? grey(k) || k : k, cx, by + bl.h - 4, 44); }
+    else if (q.Q.kind === 'col') { const c = COLS[q.Q.opts[bl.i]][2], my = by + bl.h / 2; circ(cx - 3, my + 1, 16); fs(c, 3); circ(cx + 12, my - 9, 7); fs(c, 2.5); circ(cx - 8, my - 4, 4); ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fill(); }
     else { ctx.font = '700 34px Fredoka, sans-serif'; ctx.fillText(q.Q.opts[bl.i], cx, by + bl.h / 2 + 2); }
     ctx.globalAlpha = 1;
   }
@@ -1143,13 +1223,17 @@ function drawBoard(q) {
   const Q = q.Q, cx = q.blocks[1].x + 27, top = 150, done = q.state === 'done';
   ctx.font = '700 30px Fredoka, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   let text, w;
+  const math = Q.kind === 'add' || Q.kind === 'sub';
   if (Q.kind === 'eng') { text = '🔊 Find the ' + WORDS[Q.ans][1].toLowerCase() + '!'; w = ctx.measureText(text).width + 50; }
+  else if (Q.kind === 'col') { text = '🔊 Find ' + COLS[Q.ans][1].toLowerCase() + '!'; w = ctx.measureText(text).width + 50; }
+  else if (Q.kind === 'num') { text = '🔊 Find ' + NUMS_EN[Q.ans].toLowerCase() + '!'; w = ctx.measureText(text).width + 50; }
   else { text = Q.a + (Q.kind === 'add' ? ' + ' : ' − ') + Q.b + ' = ' + (done ? Q.ans : '?'); w = Math.max(230, (Q.kind === 'add' ? Q.a + Q.b : Q.a) * 23 + 70); }
-  const hgt = Q.kind === 'eng' ? 56 : 104, x0 = cx - w / 2, wob = Math.sin(time * 2) * 2;
+  const hgt = !math ? 56 : 104, x0 = cx - w / 2, wob = Math.sin(time * 2) * 2;
   ctx.save(); ctx.translate(0, wob);
   rr(x0, top, w, hgt, 18); fs(done ? '#d9f7e4' : '#fff8ec', 3);
   ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cx - 30, top + hgt); ctx.lineTo(cx, top + hgt + 14); ctx.lineTo(cx + 30, top + hgt); ctx.stroke(); // colita
-  if (Q.kind !== 'eng') { // manzanitas para contar
+  if (q.need > 1) for (let i = 0; i < q.need; i++) { starPath(cx - (q.need - 1) * 14 + i * 28, top - 18, 12, 6, 0); fs(i < q.got ? '#ffd84d' : '#fff8ec', 2.5); } // cuántas faltan para abrir
+  if (math) { // manzanitas para contar
     const n = Q.kind === 'add' ? Q.a + Q.b : Q.a, gap = Q.kind === 'add' ? 18 : 0, rowW = n * 23 + gap; let ax = cx - rowW / 2 + 11;
     for (let i = 0; i < n; i++) {
       if (Q.kind === 'add' && i === Q.a) { ctx.fillStyle = '#e2579a'; ctx.font = '700 22px Fredoka, sans-serif'; ctx.fillText('+', ax + 1, top + 26); ax += gap; }
