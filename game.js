@@ -60,7 +60,7 @@ const WALK = ['w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
 
 /* ---------------- Animalitos, bichitos y flores (dibujos hechos en Canva) ---------------- */
 const BICHOS = ['elephant', 'giraffe', 'lion', 'monkey', 'panda', 'penguin', 'koala', 'zebra', 'hippo', 'kangaroo', 'flamingo', 'parrot', 'seal', 'octopus', 'dolphin', 'bear', 'cow', 'pig', 'lamb', 'chick', 'hen', 'foal', 'goat', 'llama', 'beaver', 'raccoon', 'mouse', 'chinchilla', 'bunny', 'cat', 'dog', 'bird', 'turtle', 'duck', 'squirrel', 'frog', 'hedgehog', 'fox', 'deer', 'owl', 'snail', 'crab', 'bee', 'gull', 'butterfly', 'ladybug', 'fish', 'sunflower', 'tulip', 'daisy', 'rose', 'apple'];
-const COSAS = ['v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
+const COSAS = ['f_platano', 'f_naranja', 'f_frutilla', 'f_sandia', 'f_pina', 'f_pera', 'f_cereza', 'f_limon', 'f_durazno', 'f_kiwi', 'f_mango', 'f_coco', 'v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
 const IMG = {};
 BICHOS.forEach(n => { const im = new Image(); im.src = 'assets/bichos/' + n + '.png'; IMG[n] = im; });
 COSAS.forEach(n => { const im = new Image(); im.src = 'assets/cosas/' + n + '.png'; IMG[n] = im; });
@@ -107,7 +107,7 @@ const MUS = { menu: new Audio('assets/audio/musica_menu.mp3'), game: new Audio('
 MUS.menu.loop = MUS.game.loop = true; MUS.menu.volume = 0.3; MUS.game.volume = 0.22;
 function play(n, vol, maxDur) {
   if (save.muted || !audioOK) return;
-  const pool = AUD[n]; let a = pool.find(x => x.paused || x.ended);
+  const pool = AUD[n]; if (!pool) return; let a = pool.find(x => x.paused || x.ended);
   if (!a) { if (pool.length < 4) { a = pool[0].cloneNode(); pool.push(a); } else a = pool[0]; }
   try { a.currentTime = 0; } catch (e) {}
   a.volume = vol || 0.6; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {});
@@ -555,6 +555,14 @@ function makeQuestion(q) {
     const kinds = lv === 0 ? ['eng'] : lv === 1 ? ['eng', 'num'] : ['eng', 'num', 'col'];
     kind = kinds[(q.got + q.n + lv) % kinds.length];
   } else if (lv >= 2 && q.got > 0) kind = ri(2) ? 'add' : 'sub';
+  // frutas en inglés: desde el 3er mundo, sólo las que ya vio en el minijuego
+  const seenFr = (save.fruits || []).filter(k => FRUTAS[k]);
+  if (kind === 'eng' && lv >= 2 && seenFr.length >= 3 && ri(2)) {
+    const ans = pickNew(seenFr, used); used.push(ans);
+    const all = Object.keys(FRUTAS), opts = [ans];
+    while (opts.length < 3) { const k = ri(3) ? seenFr[ri(seenFr.length)] : all[ri(all.length)]; if (opts.indexOf(k) < 0) opts.push(k); }
+    return { kind: 'eng', ans, opts: shuffle(opts) };
+  }
   if (kind === 'eng') {
     // sólo animalitos que ya aparecieron antes del búho (o que conoció en otros mundos)
     const before = L.friends.filter(f => f.x < q.owl.x).map(f => f.kind), met = (save.met || []).filter(k => FH[k]);
@@ -588,12 +596,13 @@ function makeQuestion(q) {
   return { kind, a, b, ans, opts: shuffle(opts) };
 }
 function wordVoice(Q) { // la palabra sola (para enseñarla)
-  if (Q.kind === 'eng') return ['en_' + Q.ans];
+  if (Q.kind === 'eng') return FRUTAS[Q.ans] ? ['fe_' + frBase(Q.ans)] : ['en_' + Q.ans];
   if (Q.kind === 'col') return ['col_' + Q.ans];
   if (Q.kind === 'num') return ['num_' + Q.ans];
   return VOZ_NUEVA.has('ans_' + Q.ans) ? ['ans_' + Q.ans] : ['n' + Q.ans];
 }
 function questionVoice(Q) {
+  if (Q.kind === 'eng' && FRUTAS[Q.ans]) return ['en_find', 'fe_' + frBase(Q.ans)];
   if (Q.kind === 'eng') return VOZ_NUEVA.has('ef_' + Q.ans) ? ['ef_' + Q.ans] : ['en_find', 'en_' + Q.ans];
   if (Q.kind === 'col') return ['fc_find', 'col_' + Q.ans];
   if (Q.kind === 'num') return ['fn_find', 'num_' + Q.ans];
@@ -1349,7 +1358,7 @@ const $ = id => document.getElementById(id);
 function setState(s) {
   state = s;
   $('scrTitle').classList.toggle('on', s === 'title'); $('scrSelect').classList.toggle('on', s === 'select');
-  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
+  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrVet').classList.toggle('on', s === 'vet'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
   const inGame = s === 'play' || s === 'pause' || s === 'win' || s === 'intro';
   $('hud').classList.toggle('on', inGame); $('touch').classList.toggle('on', isTouch && s === 'play');
   musWant = inGame ? 'game' : 'menu'; syncMusic(); rotTipCheck();
@@ -1382,7 +1391,7 @@ function showWin() {
   $('winCount').innerHTML = '🌍 ' + ecoDone + ' / ' + L.total + ' &nbsp; ⭐ ' + starsGot + ' &nbsp; 🗑️ ' + (L.tossed || 0) + (followers.length ? ' &nbsp; 🐾 ' + followers.length : '');
   $('winTip').textContent = all ? (lastLvl ? '¡Cuidaste todo el planeta! 🎉' : '¡Gracias por cuidar el planeta!') : '¿Volvemos a ayudar a los que faltaron?';
   const mini = L.idx % 2 === 1; // después del 2º, 4º y 6º mundo viene un minijuego
-  $('btnNext').textContent = mini ? '🎲 ¡Minijuego! ▶' : 'Siguiente ▶';
+  $('btnNext').textContent = mini ? (L.idx === 3 ? '🏥 ¡Veterinaria! ▶' : '🎲 ¡Minijuego! ▶') : 'Siguiente ▶';
   $('btnNext').style.display = lastLvl && !mini ? 'none' : '';
   $('scrWin').classList.add('on');
 }
@@ -1397,7 +1406,8 @@ $('btnRestart').onclick = $('btnAgain').onclick = () => startLevel(L.idx);
 $('btnMenu').onclick = $('btnMenu2').onclick = showSelect;
 $('btnNext').onclick = () => {
   const nxt = L.idx + 1, go = () => nxt < LEVELS.length ? startLevel(nxt) : showSelect();
-  if (L.idx % 2 === 1) startMini(Math.floor(L.idx / 2), go); else go();
+  // después del 2º y 6º mundo: unir parejas; después del 4º: la veterinaria
+  if (L.idx === 3) startVet(go); else if (L.idx % 2 === 1) startMini(Math.floor(L.idx / 2), go); else go();
 };
 
 /* ---------- Minijuego: unir parejas (vocales, colores y animales) ----------
@@ -1413,10 +1423,19 @@ const VOWELS = {
 // cosas de cada color (dibujo, nombre en español)
 const COLOR_THINGS = { red: [['apple', 'Manzana'], ['parrot', 'Loro']], yellow: [['chick', 'Pollito'], ['v_estrella', 'Estrella']], green: [['frog', 'Rana'], ['v_iguana', 'Iguana']], pink: [['pig', 'Chanchito'], ['flamingo', 'Flamenco']],
   orange: [['fox', 'Zorrito']], brown: [['beaver', 'Castor'], ['bear', 'Osito']], purple: [['octopus', 'Pulpo'], ['v_uvas', 'Uvas']], blue: [['dolphin', 'Delfín']] };
+// frutas: dibujo → [español, inglés, color]
+const FRUTAS = { f_platano: ['Plátano', 'Banana', 'yellow'], f_naranja: ['Naranja', 'Orange', 'orange'], f_frutilla: ['Frutilla', 'Strawberry', 'red'], f_sandia: ['Sandía', 'Watermelon', 'red'],
+  f_pina: ['Piña', 'Pineapple', 'yellow'], f_pera: ['Pera', 'Pear', 'green'], f_cereza: ['Cereza', 'Cherry', 'red'], f_limon: ['Limón', 'Lemon', 'yellow'], f_durazno: ['Durazno', 'Peach', 'pink'],
+  f_kiwi: ['Kiwi', 'Kiwi', 'green'], f_mango: ['Mango', 'Mango', 'orange'], f_coco: ['Coco', 'Coconut', 'brown'], apple: ['Manzana', 'Apple', 'red'], v_uvas: ['Uvas', 'Grapes', 'purple'] };
+for (const k in FRUTAS) if (!WORDS[k] || k.startsWith('f_')) WORDS[k] = [FRUTAS[k][0], FRUTAS[k][1]];
+const frBase = k => k === 'apple' ? 'manzana' : k.replace(/^[fv]_/, '');
+const frVoz = k => k === 'v_uvas' ? 'vw_uvas' : 'fr_' + frBase(k); // "¡Plátano! En inglés: Banana"
 let mini = null;
 function picHTML(p, cls) { return IMG[p] || /^[a-z_]+$/.test(p) ? '<img class="' + (cls || '') + '" src="' + (IMG[p] ? IMG[p].src : '') + '" alt="">' : p; }
 function startMini(n, done) {
-  mini = { round: 0, rounds: ['vow', 'col', 'ani'], done, n };
+  // 2 rondas: siempre una de frutas, más otra (vocales la primera vez; después al azar)
+  const other = n === 0 ? 'vow' : pick(['vow', 'col', 'ani']);
+  mini = { round: 0, rounds: shuffle([other, 'fru']), done, n };
   setState('mini'); $('scrWin').classList.remove('on'); speak(['mg_intro'], true); miniRound();
 }
 function miniRound() {
@@ -1430,6 +1449,14 @@ function miniRound() {
   } else if (kind === 'col') {
     $('miniTitle').textContent = '🎨 Une cada color';
     for (const c of shuffle(Object.keys(COLOR_THINGS)).slice(0, 4)) { const [img, es] = pick(COLOR_THINGS[c]); m.pairs.push({ l: '<span class="blob" style="background:' + COLS[c][2] + '"></span>', r: picHTML(img), es: COLS[c][0] + ' · ' + es, en: COLS[c][1], voz: ['col_' + c] }); }
+  } else if (kind === 'fru') {
+    $('miniTitle').textContent = '🍓 ¿De qué color es la fruta?';
+    const cs = new Set();
+    for (const k of shuffle(Object.keys(FRUTAS))) {
+      const [es, en, c] = FRUTAS[k]; if (cs.has(c)) continue; cs.add(c);
+      m.pairs.push({ l: picHTML(k), r: '<span class="blob" style="background:' + COLS[c][2] + '"></span>', es: es + ' · ' + COLS[c][0], en: en + ' · ' + COLS[c][1], voz: [frVoz(k), 'col_' + c], fruit: k });
+      if (m.pairs.length === 4) break;
+    }
   } else {
     $('miniTitle').textContent = '🐾 Encuentra su sombra';
     const met = (save.met || []).filter(k => FH[k]), pool = met.length >= 4 ? met : Object.keys(FH);
@@ -1458,14 +1485,107 @@ function miniPick(side, b) {
     $('miniLines').insertAdjacentHTML('beforeend', '<line x1="' + (r1.right - box.left) + '" y1="' + (r1.top + r1.height / 2 - box.top) + '" x2="' + (r2.left - box.left) + '" y2="' + (r2.top + r2.height / 2 - box.top) + '" stroke="#ff7fb6" stroke-width="7" stroke-linecap="round"/>');
     $('miniWord').innerHTML = p.es + ' · <span class="en">' + p.en + '</span>';
     speak(p.voz, true);
+    if (p.fruit) { save.fruits = save.fruits || []; if (save.fruits.indexOf(p.fruit) < 0) { save.fruits.push(p.fruit); persist(); } }
     if ($('miniL').querySelectorAll('.mi-b:not(.ok)').length === 0) {
       m.round++; burst(P ? P.x : 0, 0, 'star', 1);
       setTimeout(() => {
         if (m.round < m.rounds.length) miniRound();
-        else { $('miniDots').innerHTML = '⭐⭐⭐'; $('miniTitle').textContent = '🎉 ¡Muy bien, Amanda!'; speak(['p2'], true); confetti && 0; setTimeout(() => { const d = m.done; mini = null; d(); }, 2600); }
+        else { $('miniDots').innerHTML = '⭐'.repeat(m.rounds.length); $('miniTitle').textContent = '🎉 ¡Muy bien, Amanda!'; speak(['p2'], true); confetti && 0; setTimeout(() => { const d = m.done; mini = null; d(); }, 2600); }
       }, 2400);
     }
   } else { a.classList.add('bad'); b.classList.add('bad'); sfx.hurt(); setTimeout(() => { a.classList.remove('bad'); b.classList.remove('bad'); }, 400); speak(['e_casi'], true); }
+}
+
+/* ---------- Minijuego: la veterinaria ----------
+   Llega un perrito (y después un gatito) sucio y herido. Amanda elige la herramienta correcta en la bandeja
+   y la usa sobre la mascota: jabón en cada mancha, ducha, inyección, curita en la herida y su premio. */
+const VET_TOOLS = { soap: ['🧼', 'Jabón'], shower: ['🚿', 'Ducha'], shot: ['💉', 'Inyección'], band: ['🩹', 'Curita'], thermo: ['🌡️', 'Termómetro'],
+  pill: ['💊', 'Pastilla'], bear: ['🧸', 'Peluche'], bone: ['🦴', 'Hueso'], fish: ['🐟', 'Pescado'], yarn: ['🧶', 'Lana'] };
+const VET_PETS = [{ pet: 'dog', name: 'perrito', treat: 'bone', hi: 'vet_perro' }, { pet: 'cat', name: 'gatito', treat: 'fish', hi: 'vet_gato' }];
+function vetSteps(P) {
+  return [
+    { tool: 'soap', txt: '🧼 ¡Está muy sucio! Toma el <b>jabón</b>…', go: '…y frota cada mancha 🟤', voz: 'vet_sucio' },
+    { tool: 'shower', txt: '🚿 ¡Ahora enjuágalo con la <b>ducha</b>!', go: 'Toca al ' + P.name + ' 💦', voz: 'vet_ducha' },
+    { tool: 'shot', txt: '💉 Le duele… ¡busca la <b>inyección</b>!', go: 'Toca al ' + P.name + ' (¡pinchazo chiquitito!)', voz: 'vet_inyeccion' },
+    { tool: 'band', txt: '🩹 Ponle una <b>curita</b> en la herida', go: 'Toca la herida roja', voz: 'vet_curita' },
+    { tool: P.treat, txt: VET_TOOLS[P.treat][0] + ' ¡Se portó muy bien! Dale su <b>premio</b>', go: 'Dáselo al ' + P.name, voz: 'vet_premio' },
+  ];
+}
+let vet = null;
+function startVet(done) {
+  vet = { p: 0, done };
+  setState('vet'); $('scrWin').classList.remove('on'); vetPatient();
+}
+function vetPatient() {
+  const P = VET_PETS[vet.p]; vet.steps = vetSteps(P); vet.s = 0; vet.tool = null; vet.busy = false;
+  const box = $('vetPet');
+  let h = '<img id="vetImg" src="' + IMG[P.pet].src + '" alt="">';
+  for (let i = 0; i < 5; i++) { // manchas de barro repartidas sobre el cuerpo
+    const x = 24 + (i % 3) * 22 + ri(8), y = 46 + Math.floor(i / 3) * 22 + ri(10);
+    h += '<span class="mud" data-m="' + i + '" style="left:' + x + '%;top:' + y + '%"></span>';
+  }
+  h += '<span class="wound" id="vetWound"></span><span class="tear">💧</span><div id="vetFx"></div>';
+  box.innerHTML = h; box.className = 'vet-pet sad dirty';
+  box.querySelectorAll('.mud').forEach(m => m.onclick = e => { e.stopPropagation(); vetMud(m); });
+  $('vetWound').onclick = e => { e.stopPropagation(); vetUse('wound'); };
+  box.onclick = () => vetUse('pet');
+  const need = vet.steps.map(s => s.tool), extra = shuffle(Object.keys(VET_TOOLS).filter(k => need.indexOf(k) < 0)).slice(0, 3);
+  $('vetTools').innerHTML = shuffle(need.concat(extra)).map(k => '<button class="vt" data-t="' + k + '"><span>' + VET_TOOLS[k][0] + '</span><small>' + VET_TOOLS[k][1] + '</small></button>').join('');
+  $('vetTools').querySelectorAll('.vt').forEach(b => b.onclick = () => vetTool(b));
+  $('vetTitle').textContent = '🏥 ¡Veterinaria! ' + (vet.p === 0 ? '🐶' : '🐱');
+  speak([P.hi], true); vetShowStep(false);
+}
+function vetShowStep(talk) {
+  const st = vet.steps[vet.s];
+  $('vetHelp').innerHTML = st.txt;
+  $('vetDots').innerHTML = VET_PETS.map((P, i) => '<span>' + (i < vet.p ? '💖' : i === vet.p ? (P.pet === 'dog' ? '🐶' : '🐱') : '⚪') + '</span>').join('') +
+    ' &nbsp; ' + vet.steps.map((s, i) => '<span class="' + (i < vet.s ? 'ok' : i === vet.s ? 'now' : '') + '">' + VET_TOOLS[s.tool][0] + '</span>').join('');
+  if (talk !== false) speak([st.voz], true); else speak([st.voz]);
+}
+function vetTool(b) {
+  if (vet.busy) return; initAudio();
+  const st = vet.steps[vet.s];
+  if (b.dataset.t !== st.tool) { b.classList.add('bad'); sfx.hurt(); setTimeout(() => b.classList.remove('bad'), 400); speak(['vet_esa_no'], true); $('vetHelp').innerHTML = '🙈 Esa no es… ' + st.txt; return; }
+  $('vetTools').querySelectorAll('.vt.sel').forEach(x => x.classList.remove('sel'));
+  b.classList.add('sel'); vet.tool = st.tool; play('click', 0.5); $('vetHelp').innerHTML = VET_TOOLS[st.tool][0] + ' ' + st.go;
+  if (st.tool === 'soap') $('vetPet').classList.add('scrub');
+}
+function vetFx(ch, x, y, cls) { const s = document.createElement('span'); s.className = 'vfx ' + (cls || ''); s.textContent = ch; s.style.left = x + '%'; s.style.top = y + '%'; $('vetFx').appendChild(s); setTimeout(() => s.remove(), 1400); }
+function vetMud(m) {
+  if (vet.busy || vet.tool !== 'soap' || vet.steps[vet.s].tool !== 'soap') { vetUse('pet'); return; }
+  if (m.classList.contains('foam')) return;
+  m.classList.add('foam'); m.textContent = '🫧'; play('boing', 0.3);
+  if (!$('vetPet').querySelector('.mud:not(.foam)')) { $('vetPet').classList.remove('dirty', 'scrub'); vetNext(); }
+}
+function vetUse(where) {
+  if (vet.busy) return; const st = vet.steps[vet.s];
+  if (!vet.tool) { $('vetHelp').innerHTML = '👇 Primero elige algo de la bandeja. ' + st.txt; return; }
+  if (st.tool === 'soap') return;
+  if (st.tool === 'band' && where !== 'wound') { $('vetHelp').innerHTML = '🩹 ¡En la herida roja!'; return; }
+  const box = $('vetPet');
+  if (st.tool === 'shower') {
+    for (let i = 0; i < 9; i++) setTimeout(() => vetFx('💧', 20 + ri(60), -5, 'drop'), i * 90);
+    play('splash', 0.5); setTimeout(() => box.querySelectorAll('.mud').forEach(m => m.remove()), 700);
+  } else if (st.tool === 'shot') {
+    vetFx('💉', 62, 40, 'poke'); box.classList.add('ouch'); setTimeout(() => { box.classList.remove('ouch'); vetFx('✨', 58, 64); }, 600);
+  } else if (st.tool === 'band') {
+    $('vetWound').classList.add('fixed'); $('vetWound').textContent = '🩹'; play('star', 0.4);
+  } else { // premio: queda sanito y feliz
+    vetFx(VET_TOOLS[st.tool][0], 50, 55, 'eat'); box.className = 'vet-pet happy';
+    for (let i = 0; i < 7; i++) setTimeout(() => vetFx(pick(['💖', '⭐', '💕']), 15 + ri(70), 30 + ri(40), 'up'), 200 + i * 120);
+  }
+  vetNext();
+}
+function vetNext() {
+  vet.busy = true; vet.tool = null; vet.s++;
+  $('vetTools').querySelectorAll('.vt.sel').forEach(x => x.classList.remove('sel'));
+  if (vet.s < vet.steps.length) { play('star', 0.35); setTimeout(() => { vet.busy = false; vetShowStep(); }, 1200); return; }
+  play('win', 0.5); $('vetHelp').innerHTML = '🎉 ¡El ' + VET_PETS[vet.p].name + ' quedó sanito y feliz!'; speak(['vet_sano'], true);
+  vet.p++;
+  setTimeout(() => {
+    if (vet.p < VET_PETS.length) vetPatient();
+    else { $('vetDots').innerHTML = '💖💖'; $('vetHelp').innerHTML = '🩺 ¡Eres una gran doctora, Amanda!'; speak(['p2'], true); setTimeout(() => { const d = vet.done; vet = null; d(); }, 2600); }
+  }, 3200);
 }
 
 /* ---------- Pantalla para elegir los botones del control ---------- */
