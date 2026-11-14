@@ -59,18 +59,18 @@ const AX = { water: 0.3, pet: 0.36, pickup: 0.42, toss: 0.36, plant: 0.4, thumbs
 const WALK = ['w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
 
 /* ---------------- Animalitos, bichitos y flores (dibujos hechos en Canva) ---------------- */
-const BICHOS = ['cow', 'pig', 'lamb', 'chick', 'hen', 'foal', 'goat', 'llama', 'beaver', 'raccoon', 'mouse', 'chinchilla', 'bunny', 'cat', 'dog', 'bird', 'turtle', 'duck', 'squirrel', 'frog', 'hedgehog', 'fox', 'deer', 'owl', 'snail', 'crab', 'bee', 'gull', 'butterfly', 'ladybug', 'fish', 'sunflower', 'tulip', 'daisy', 'rose', 'apple'];
-const COSAS = ['t_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
+const BICHOS = ['elephant', 'giraffe', 'lion', 'monkey', 'panda', 'penguin', 'koala', 'zebra', 'hippo', 'kangaroo', 'flamingo', 'parrot', 'seal', 'octopus', 'dolphin', 'bear', 'cow', 'pig', 'lamb', 'chick', 'hen', 'foal', 'goat', 'llama', 'beaver', 'raccoon', 'mouse', 'chinchilla', 'bunny', 'cat', 'dog', 'bird', 'turtle', 'duck', 'squirrel', 'frog', 'hedgehog', 'fox', 'deer', 'owl', 'snail', 'crab', 'bee', 'gull', 'butterfly', 'ladybug', 'fish', 'sunflower', 'tulip', 'daisy', 'rose', 'apple'];
+const COSAS = ['v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
 const IMG = {};
 BICHOS.forEach(n => { const im = new Image(); im.src = 'assets/bichos/' + n + '.png'; IMG[n] = im; });
 COSAS.forEach(n => { const im = new Image(); im.src = 'assets/cosas/' + n + '.png'; IMG[n] = im; });
 const BG = {}; ['garden', 'beach', 'forest', 'farm', 'lake', 'mountain'].forEach(n => { const im = new Image(); im.src = 'assets/fondos/' + n + '.jpg'; BG[n] = im; });
 const FLOWERS = ['sunflower', 'tulip', 'daisy', 'rose'];
 // Español / inglés para enseñar palabras
-const WORDS = { cow: ['Vaquita', 'Cow'], pig: ['Chanchito', 'Pig'], lamb: ['Corderito', 'Lamb'], chick: ['Pollito', 'Chick'], hen: ['Gallina', 'Hen'], foal: ['Caballito', 'Horse'], goat: ['Cabrita', 'Goat'], llama: ['Llama', 'Llama'], beaver: ['Castor', 'Beaver'], raccoon: ['Mapache', 'Raccoon'], mouse: ['Ratoncito', 'Mouse'], chinchilla: ['Chinchilla', 'Chinchilla'], bunny: ['Conejito', 'Bunny'], cat: ['Gatito', 'Cat'], dog: ['Perrito', 'Dog'], bird: ['Pajarito', 'Bird'], turtle: ['Tortuga', 'Turtle'], duck: ['Patito', 'Duck'], squirrel: ['Ardilla', 'Squirrel'], frog: ['Rana', 'Frog'], hedgehog: ['Erizo', 'Hedgehog'], fox: ['Zorrito', 'Fox'], deer: ['Venadito', 'Deer'], owl: ['Búho', 'Owl'], sunflower: ['Girasol', 'Sunflower'], tulip: ['Tulipán', 'Tulip'], daisy: ['Margarita', 'Daisy'], rose: ['Rosa', 'Rose'], butterfly: ['Mariposa', 'Butterfly'] };
+const WORDS = { elephant: ['Elefante', 'Elephant'], giraffe: ['Jirafa', 'Giraffe'], lion: ['León', 'Lion'], monkey: ['Monito', 'Monkey'], panda: ['Panda', 'Panda'], penguin: ['Pingüino', 'Penguin'], koala: ['Koala', 'Koala'], zebra: ['Cebra', 'Zebra'], hippo: ['Hipopótamo', 'Hippo'], kangaroo: ['Canguro', 'Kangaroo'], flamingo: ['Flamenco', 'Flamingo'], parrot: ['Loro', 'Parrot'], seal: ['Foca', 'Seal'], octopus: ['Pulpo', 'Octopus'], dolphin: ['Delfín', 'Dolphin'], bear: ['Osito', 'Bear'], cow: ['Vaquita', 'Cow'], pig: ['Chanchito', 'Pig'], lamb: ['Corderito', 'Lamb'], chick: ['Pollito', 'Chick'], hen: ['Gallina', 'Hen'], foal: ['Caballito', 'Horse'], goat: ['Cabrita', 'Goat'], llama: ['Llama', 'Llama'], beaver: ['Castor', 'Beaver'], raccoon: ['Mapache', 'Raccoon'], mouse: ['Ratoncito', 'Mouse'], chinchilla: ['Chinchilla', 'Chinchilla'], bunny: ['Conejito', 'Bunny'], cat: ['Gatito', 'Cat'], dog: ['Perrito', 'Dog'], bird: ['Pajarito', 'Bird'], turtle: ['Tortuga', 'Turtle'], duck: ['Patito', 'Duck'], squirrel: ['Ardilla', 'Squirrel'], frog: ['Rana', 'Frog'], hedgehog: ['Erizo', 'Hedgehog'], fox: ['Zorrito', 'Fox'], deer: ['Venadito', 'Deer'], owl: ['Búho', 'Owl'], sunflower: ['Girasol', 'Sunflower'], tulip: ['Tulipán', 'Tulip'], daisy: ['Margarita', 'Daisy'], rose: ['Rosa', 'Rose'], butterfly: ['Mariposa', 'Butterfly'] };
 const COLS = { red: ['Rojo', 'Red', '#e8453c', '🔴'], blue: ['Azul', 'Blue', '#3f8fe8', '🔵'], yellow: ['Amarillo', 'Yellow', '#ffd23f', '🟡'], green: ['Verde', 'Green', '#4cc25a', '🟢'], orange: ['Naranja', 'Orange', '#ff9a2e', '🟠'], purple: ['Morado', 'Purple', '#9b5de5', '🟣'], pink: ['Rosado', 'Pink', '#ff7fb6', '🩷'], brown: ['Café', 'Brown', '#9a6537', '🟤'] };
 const NUMS_EN = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
-const FH = { cow: 60, pig: 52, lamb: 54, chick: 42, hen: 54, foal: 66, goat: 58, llama: 74, beaver: 52, raccoon: 54, mouse: 44, chinchilla: 48, bunny: 64, cat: 54, dog: 56, bird: 48, turtle: 44, duck: 54, squirrel: 58, frog: 46, hedgehog: 46, fox: 58, deer: 74 };
+const FH = { elephant: 66, giraffe: 84, lion: 62, monkey: 58, panda: 60, penguin: 56, koala: 56, zebra: 66, hippo: 60, kangaroo: 68, flamingo: 76, parrot: 54, seal: 50, octopus: 54, dolphin: 52, bear: 62, cow: 60, pig: 52, lamb: 54, chick: 42, hen: 54, foal: 66, goat: 58, llama: 74, beaver: 52, raccoon: 54, mouse: 44, chinchilla: 48, bunny: 64, cat: 54, dog: 56, bird: 48, turtle: 44, duck: 54, squirrel: 58, frog: 46, hedgehog: 46, fox: 58, deer: 74 };
 const ready = im => im && (im.getContext || (im.complete && im.naturalWidth));
 // Versión gris (para lo que está triste): se hace con modos de mezcla, sin leer píxeles (funciona abriendo el archivo directo)
 const GREY = {};
@@ -427,20 +427,20 @@ const LEVELS = [
 
 /* Tramos extra al final de cada mundo (más tramos y más bichos mientras más avanza).
    La meta original queda como bandera y la nueva meta va al final. */
-const EXTRA_FRIENDS = { garden: ['bunny', 'duck', 'cat'], beach: ['turtle', 'bird', 'dog', 'duck'], forest: ['squirrel', 'hedgehog', 'fox', 'deer'], farm: ['chick', 'hen', 'pig', 'lamb', 'cow'], lake: ['frog', 'beaver', 'raccoon', 'mouse', 'duck'], mountain: ['llama', 'goat', 'foal', 'chinchilla'] };
+const EXTRA_FRIENDS = { garden: ['monkey', 'parrot'], beach: ['seal', 'octopus', 'dolphin'], forest: ['bear', 'panda', 'koala'], farm: ['kangaroo', 'giraffe'], lake: ['flamingo', 'hippo'], mountain: ['penguin', 'lion', 'zebra', 'elephant'] };
 function extendLevel(L, r, idx, x) {
   const R = rng(4321 + idx * 131), segs = 2 + idx, d = idx;
   if (L.goal) { L.flags.push({ x: L.goal.x, y: L.goal.y, on: false }); L.goal = null; }
-  const pool = EXTRA_FRIENDS[L.themeName] || ['bunny'];
-  const friendKind = () => pool[Math.floor(R() * pool.length)];
+  const pool = (EXTRA_FRIENDS[L.themeName] || []).slice();
+  const friend = (x, h) => { const k = pool.shift(); if (k) r.friend(x, k, h); }; // sin repetir: si ya no quedan, no pone ninguno
   const S = [
-    x => { r.ground(x, x + 12); r.walker(x + 1.5, x + 6.5); r.starRow(x + 2, 2.2, 3); r.trash(x + 8); if (d >= 2) { r.hazard(x + 10.2); r.starArc(x + 9.4, 2.2, 3); } return x + 12; },
+    x => { r.ground(x, x + 12); r.walker(x + 1.5, x + 6.5); r.starRow(x + 2, 2.2, 3); r.trash(x + 8); friend(x + 10.6); if (d >= 2) { r.hazard(x + 10.2); r.starArc(x + 9.4, 2.2, 3); } return x + 12; },
     x => { r.plat(x + 1.2, 0, 1.6); r.plat(x + 4.2, 0, 1.6); r.starArc(x + 0.5, 1.5, 6); r.ground(x + 7, x + 15); r.plant(x + 9); r.bin(x + 12.5); if (d >= 3) r.flyer(x + 11); return x + 15; },
-    x => { r.mover(x + 0.3, 0, 3, 3, 0, 5); r.starRow(x + 1, 1.6, 4); r.ground(x + 7, x + 18); r.friend(x + 9, friendKind()); r.trash(x + 12); r.seed(x + 15); if (d >= 1) r.walker(x + 13, x + 17.5); return x + 18; },
+    x => { r.mover(x + 0.3, 0, 3, 3, 0, 5); r.starRow(x + 1, 1.6, 4); r.ground(x + 7, x + 18); friend(x + 9); r.trash(x + 12); r.seed(x + 15); if (d >= 1) r.walker(x + 13, x + 17.5); return x + 18; },
     x => { r.ground(x, x + 4, 1); r.ground(x + 4, x + 8, 2); r.trash(x + 6, 2); r.ground(x + 8, x + 12, 1); r.plant(x + 10, 1); r.star(x + 1, 2.2); r.star(x + 5, 3.2); r.star(x + 9, 2.2); r.ground(x + 12, x + 16); r.bin(x + 14); return x + 16; },
-    x => { r.ground(x, x + 13); r.mush(x + 1.5); r.plat(x + 3, 5, 3); r.starRow(x + 3, 6, 2); r.heart(x + 5, 6); r.trash(x + 8.5); r.friend(x + 11, friendKind()); if (d >= 2) r.flyer(x + 7); return x + 13; },
-    x => { r.ground(x, x + 13); r.log(x + 2, 4); r.starRow(x + 2, 0.6, 4); r.seed(x + 7.5); if (d >= 1) r.walker(x + 9, x + 12.5); else r.trash(x + 10); return x + 13; },
-    x => { r.plat(x + 1, 0, 1); r.starArc(x, 1.4, 3); r.ground(x + 3, x + 14); r.hazard(x + 5.5); r.starArc(x + 4.5, 2.2, 3); r.trash(x + 8.5); r.friend(x + 11.5, friendKind()); if (d >= 4) r.hazard(x + 13.2); return x + 14; },
+    x => { r.ground(x, x + 13); r.mush(x + 1.5); r.plat(x + 3, 5, 3); r.starRow(x + 3, 6, 2); r.heart(x + 5, 6); r.trash(x + 8.5); friend(x + 11); if (d >= 2) r.flyer(x + 7); return x + 13; },
+    x => { r.ground(x, x + 13); r.log(x + 2, 4); r.starRow(x + 2, 0.6, 4); r.seed(x + 7.5); friend(x + 11.8); if (d >= 1) r.walker(x + 9, x + 12.5); else r.trash(x + 10); return x + 13; },
+    x => { r.plat(x + 1, 0, 1); r.starArc(x, 1.4, 3); r.ground(x + 3, x + 14); r.hazard(x + 5.5); r.starArc(x + 4.5, 2.2, 3); r.trash(x + 8.5); friend(x + 11.5); if (d >= 4) r.hazard(x + 13.2); return x + 14; },
   ];
   // primero tramos fáciles; después se mezclan
   const order = [0, 5, 1, 2, 4, 3, 6]; for (let i = order.length - 1; i > 3; i--) { const j = 3 + Math.floor(R() * (i - 2)); [order[i], order[j]] = [order[j], order[i]]; }
@@ -1404,13 +1404,15 @@ $('btnNext').onclick = () => {
    Se toca algo de la izquierda y luego su pareja de la derecha: se dibuja una línea y la voz dice la palabra
    en español y en inglés. 3 rondas; después sigue el siguiente mundo. */
 const VOWELS = {
-  A: [['abeja', 'Abeja', 'Bee', 'bee'], ['ardilla', 'Ardilla', 'Squirrel', 'squirrel'], ['arbol', 'Árbol', 'Tree', 'tree'], ['arcoiris', 'Arcoíris', 'Rainbow', 'rainbow'], ['avion', 'Avión', 'Airplane', '✈️']],
-  E: [['erizo', 'Erizo', 'Hedgehog', 'hedgehog'], ['estrella', 'Estrella', 'Star', '⭐'], ['elefante', 'Elefante', 'Elephant', '🐘']],
-  I: [['iguana', 'Iguana', 'Iguana', '🦎'], ['iglu', 'Iglú', 'Igloo', '🛖'], ['isla', 'Isla', 'Island', '🏝️']],
-  O: [['oveja', 'Oveja', 'Sheep', 'lamb'], ['oso', 'Oso', 'Bear', '🐻'], ['ola', 'Ola', 'Wave', '🌊']],
-  U: [['uvas', 'Uvas', 'Grapes', '🍇'], ['unicornio', 'Unicornio', 'Unicorn', '🦄'], ['uno', 'Uno', 'One', '1️⃣']],
+  A: [['abeja', 'Abeja', 'Bee', 'bee'], ['ardilla', 'Ardilla', 'Squirrel', 'squirrel'], ['arbol', 'Árbol', 'Tree', 'tree'], ['arcoiris', 'Arcoíris', 'Rainbow', 'rainbow'], ['avion', 'Avión', 'Airplane', 'v_avion'], ['anillo', 'Anillo', 'Ring', 'v_anillo']],
+  E: [['erizo', 'Erizo', 'Hedgehog', 'hedgehog'], ['estrella', 'Estrella', 'Star', 'v_estrella'], ['elefante', 'Elefante', 'Elephant', 'elephant']],
+  I: [['iguana', 'Iguana', 'Iguana', 'v_iguana'], ['iglu', 'Iglú', 'Igloo', 'v_iglu'], ['isla', 'Isla', 'Island', 'v_isla']],
+  O: [['oveja', 'Oveja', 'Sheep', 'lamb'], ['oso', 'Oso', 'Bear', 'bear'], ['ola', 'Ola', 'Wave', 'v_ola'], ['ojo', 'Ojo', 'Eye', 'v_ojo'], ['oruga', 'Oruga', 'Caterpillar', 'v_oruga']],
+  U: [['uvas', 'Uvas', 'Grapes', 'v_uvas'], ['unicornio', 'Unicornio', 'Unicorn', 'v_unicornio']],
 };
-const COLOR_THINGS = { red: ['apple', 'Manzana'], yellow: ['chick', 'Pollito'], green: ['frog', 'Rana'], pink: ['pig', 'Chanchito'], orange: ['fox', 'Zorrito'], brown: ['beaver', 'Castor'] };
+// cosas de cada color (dibujo, nombre en español)
+const COLOR_THINGS = { red: [['apple', 'Manzana'], ['parrot', 'Loro']], yellow: [['chick', 'Pollito'], ['v_estrella', 'Estrella']], green: [['frog', 'Rana'], ['v_iguana', 'Iguana']], pink: [['pig', 'Chanchito'], ['flamingo', 'Flamenco']],
+  orange: [['fox', 'Zorrito']], brown: [['beaver', 'Castor'], ['bear', 'Osito']], purple: [['octopus', 'Pulpo'], ['v_uvas', 'Uvas']], blue: [['dolphin', 'Delfín']] };
 let mini = null;
 function picHTML(p, cls) { return IMG[p] || /^[a-z_]+$/.test(p) ? '<img class="' + (cls || '') + '" src="' + (IMG[p] ? IMG[p].src : '') + '" alt="">' : p; }
 function startMini(n, done) {
@@ -1427,7 +1429,7 @@ function miniRound() {
     for (const v of vs) { const it = pick(VOWELS[v]); m.pairs.push({ l: '<span>' + v + '<small style="font-size:.6em">' + v.toLowerCase() + '</small></span>', r: picHTML(it[3]), es: it[1], en: it[2], voz: ['vw_' + it[0]], lv: ['vl_' + v.toLowerCase()] }); }
   } else if (kind === 'col') {
     $('miniTitle').textContent = '🎨 Une cada color';
-    for (const c of shuffle(Object.keys(COLOR_THINGS)).slice(0, 4)) { const [img, es] = COLOR_THINGS[c]; m.pairs.push({ l: '<span class="blob" style="background:' + COLS[c][2] + '"></span>', r: picHTML(img), es: COLS[c][0] + ' · ' + es, en: COLS[c][1], voz: ['col_' + c] }); }
+    for (const c of shuffle(Object.keys(COLOR_THINGS)).slice(0, 4)) { const [img, es] = pick(COLOR_THINGS[c]); m.pairs.push({ l: '<span class="blob" style="background:' + COLS[c][2] + '"></span>', r: picHTML(img), es: COLS[c][0] + ' · ' + es, en: COLS[c][1], voz: ['col_' + c] }); }
   } else {
     $('miniTitle').textContent = '🐾 Encuentra su sombra';
     const met = (save.met || []).filter(k => FH[k]), pool = met.length >= 4 ? met : Object.keys(FH);
