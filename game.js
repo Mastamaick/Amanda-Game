@@ -1358,7 +1358,7 @@ const $ = id => document.getElementById(id);
 function setState(s) {
   state = s;
   $('scrTitle').classList.toggle('on', s === 'title'); $('scrSelect').classList.toggle('on', s === 'select');
-  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrVet').classList.toggle('on', s === 'vet'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
+  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrVet').classList.toggle('on', s === 'vet'); $('scrFin').classList.toggle('on', s === 'fin'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
   const inGame = s === 'play' || s === 'pause' || s === 'win' || s === 'intro';
   $('hud').classList.toggle('on', inGame); $('touch').classList.toggle('on', isTouch && s === 'play');
   musWant = inGame ? 'game' : 'menu'; syncMusic(); rotTipCheck();
@@ -1405,7 +1405,7 @@ $('btnResume').onclick = resume;
 $('btnRestart').onclick = $('btnAgain').onclick = () => startLevel(L.idx);
 $('btnMenu').onclick = $('btnMenu2').onclick = showSelect;
 $('btnNext').onclick = () => {
-  const nxt = L.idx + 1, go = () => nxt < LEVELS.length ? startLevel(nxt) : showSelect();
+  const nxt = L.idx + 1, go = () => nxt < LEVELS.length ? startLevel(nxt) : showFinale();
   // después del 2º y 6º mundo: unir parejas; después del 4º: la veterinaria
   if (L.idx === 3) startVet(go); else if (L.idx % 2 === 1) startMini(Math.floor(L.idx / 2), go); else go();
 };
@@ -1556,6 +1556,33 @@ function vetTool(b) {
     }, 3400);
   }, 1500);
 }
+
+/* ---------- Final del juego: el planeta feliz ----------
+   Al terminar el último mundo (y su minijuego): la Tierra aparece girando y sonriendo, los animalitos que conoció
+   dan vueltas a su alrededor, Amanda la abraza y cae confeti. */
+function showFinale() {
+  save.finished = true; persist();
+  const met = (save.met || []).filter(k => IMG[k]), friends = shuffle(met.length >= 6 ? met.slice() : Object.keys(FH).filter(k => IMG[k])).slice(0, 8);
+  $('finOrbit').innerHTML = friends.map((k, i) => {
+    const a = i / friends.length * Math.PI * 2 - Math.PI / 2, r = 292; // % del ancho de cada dibujo
+    return '<img src="' + IMG[k].src + '" alt="" style="transform:translate(' + (Math.cos(a) * r).toFixed(0) + '%,' + (Math.sin(a) * r).toFixed(0) + '%)">';
+  }).join('');
+  const stars = save.best.reduce((s, n) => s + (n || 0), 0);
+  $('finStats').innerHTML = '<span class="pill">🌍 ' + LEVELS.length + ' mundos</span><span class="pill">⭐ ' + stars + ' / ' + LEVELS.length * 3 + '</span>' + (met.length ? '<span class="pill">🐾 ' + met.length + ' amigos</span>' : '') +
+    ((save.fruits || []).length ? '<span class="pill">🍓 ' + save.fruits.length + ' frutas</span>' : '');
+  setState('fin'); $('scrWin').classList.remove('on');
+  shutUp(); play('win', 0.6); setTimeout(() => speak(['w_win', 'p_todo'], true), 1200);
+  const box = $('finConf'), cols = ['#ff7fb6', '#ffd84d', '#7be0c3', '#7fb8ff', '#c69bff'];
+  box.innerHTML = '';
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('span'); c.className = 'fin-conf';
+    c.style.left = Math.random() * 100 + '%'; c.style.background = cols[i % 5];
+    c.style.animationDuration = (3 + Math.random() * 3) + 's'; c.style.animationDelay = (Math.random() * 4) + 's';
+    box.appendChild(c);
+  }
+}
+$('btnFinPlay').onclick = () => { initAudio(); play('click', 0.5); startLevel(0); };
+$('btnFinHome').onclick = () => { play('click', 0.5); setState('title'); };
 
 /* ---------- Pantalla para elegir los botones del control ---------- */
 const PAD_ACTS = [['jump', '⬆ Saltar'], ['wave', '✋ Ayudar'], ['greet', '👋 Saludar'], ['start', '⏸ Pausa']];
