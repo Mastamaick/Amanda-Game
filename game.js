@@ -60,7 +60,7 @@ const WALK = ['w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
 
 /* ---------------- Animalitos, bichitos y flores (dibujos hechos en Canva) ---------------- */
 const BICHOS = ['elephant', 'giraffe', 'lion', 'monkey', 'panda', 'penguin', 'koala', 'zebra', 'hippo', 'kangaroo', 'flamingo', 'parrot', 'seal', 'octopus', 'dolphin', 'bear', 'cow', 'pig', 'lamb', 'chick', 'hen', 'foal', 'goat', 'llama', 'beaver', 'raccoon', 'mouse', 'chinchilla', 'bunny', 'cat', 'dog', 'bird', 'turtle', 'duck', 'squirrel', 'frog', 'hedgehog', 'fox', 'deer', 'owl', 'snail', 'crab', 'bee', 'gull', 'butterfly', 'ladybug', 'fish', 'sunflower', 'tulip', 'daisy', 'rose', 'apple'];
-const COSAS = ['vet_dog_1', 'vet_dog_2', 'vet_dog_3', 'vet_dog_4', 'vet_cat_1', 'vet_cat_2', 'vet_cat_3', 'vet_cat_4', 'f_platano', 'f_naranja', 'f_frutilla', 'f_sandia', 'f_pina', 'f_pera', 'f_cereza', 'f_limon', 'f_durazno', 'f_kiwi', 'f_mango', 'f_coco', 'v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
+const COSAS = ['c_carrot', 'c_broccoli', 'c_tomato', 'c_corn', 'c_lettuce', 'c_cucumber', 'c_water', 'c_milk', 'j_burger', 'j_fries', 'j_soda', 'j_candy', 'j_donut', 'j_chips', 'j_icecream', 'j_lollipop', 'vet_dog_1', 'vet_dog_2', 'vet_dog_3', 'vet_dog_4', 'vet_cat_1', 'vet_cat_2', 'vet_cat_3', 'vet_cat_4', 'f_platano', 'f_naranja', 'f_frutilla', 'f_sandia', 'f_pina', 'f_pera', 'f_cereza', 'f_limon', 'f_durazno', 'f_kiwi', 'f_mango', 'f_coco', 'v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
 const IMG = {};
 BICHOS.forEach(n => { const im = new Image(); im.src = 'assets/bichos/' + n + '.png'; IMG[n] = im; });
 COSAS.forEach(n => { const im = new Image(); im.src = 'assets/cosas/' + n + '.png'; IMG[n] = im; });
@@ -69,7 +69,7 @@ const FLOWERS = ['sunflower', 'tulip', 'daisy', 'rose'];
 // Español / inglés para enseñar palabras
 const WORDS = { elephant: ['Elefante', 'Elephant'], giraffe: ['Jirafa', 'Giraffe'], lion: ['León', 'Lion'], monkey: ['Monito', 'Monkey'], panda: ['Panda', 'Panda'], penguin: ['Pingüino', 'Penguin'], koala: ['Koala', 'Koala'], zebra: ['Cebra', 'Zebra'], hippo: ['Hipopótamo', 'Hippo'], kangaroo: ['Canguro', 'Kangaroo'], flamingo: ['Flamenco', 'Flamingo'], parrot: ['Loro', 'Parrot'], seal: ['Foca', 'Seal'], octopus: ['Pulpo', 'Octopus'], dolphin: ['Delfín', 'Dolphin'], bear: ['Osito', 'Bear'], cow: ['Vaquita', 'Cow'], pig: ['Chanchito', 'Pig'], lamb: ['Corderito', 'Lamb'], chick: ['Pollito', 'Chick'], hen: ['Gallina', 'Hen'], foal: ['Caballito', 'Horse'], goat: ['Cabrita', 'Goat'], llama: ['Llama', 'Llama'], beaver: ['Castor', 'Beaver'], raccoon: ['Mapache', 'Raccoon'], mouse: ['Ratoncito', 'Mouse'], chinchilla: ['Chinchilla', 'Chinchilla'], bunny: ['Conejito', 'Bunny'], cat: ['Gatito', 'Cat'], dog: ['Perrito', 'Dog'], bird: ['Pajarito', 'Bird'], turtle: ['Tortuga', 'Turtle'], duck: ['Patito', 'Duck'], squirrel: ['Ardilla', 'Squirrel'], frog: ['Rana', 'Frog'], hedgehog: ['Erizo', 'Hedgehog'], fox: ['Zorrito', 'Fox'], deer: ['Venadito', 'Deer'], owl: ['Búho', 'Owl'], sunflower: ['Girasol', 'Sunflower'], tulip: ['Tulipán', 'Tulip'], daisy: ['Margarita', 'Daisy'], rose: ['Rosa', 'Rose'], butterfly: ['Mariposa', 'Butterfly'] };
 const COLS = { red: ['Rojo', 'Red', '#e8453c', '🔴'], blue: ['Azul', 'Blue', '#3f8fe8', '🔵'], yellow: ['Amarillo', 'Yellow', '#ffd23f', '🟡'], green: ['Verde', 'Green', '#4cc25a', '🟢'], orange: ['Naranja', 'Orange', '#ff9a2e', '🟠'], purple: ['Morado', 'Purple', '#9b5de5', '🟣'], pink: ['Rosado', 'Pink', '#ff7fb6', '🩷'], brown: ['Café', 'Brown', '#9a6537', '🟤'] };
-const NUMS_EN = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+const NUMS_EN = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
 const FH = { elephant: 66, giraffe: 84, lion: 62, monkey: 58, panda: 60, penguin: 56, koala: 56, zebra: 66, hippo: 60, kangaroo: 68, flamingo: 76, parrot: 54, seal: 50, octopus: 54, dolphin: 52, bear: 62, cow: 60, pig: 52, lamb: 54, chick: 42, hen: 54, foal: 66, goat: 58, llama: 74, beaver: 52, raccoon: 54, mouse: 44, chinchilla: 48, bunny: 64, cat: 54, dog: 56, bird: 48, turtle: 44, duck: 54, squirrel: 58, frog: 46, hedgehog: 46, fox: 58, deer: 74 };
 const ready = im => im && (im.getContext || (im.complete && im.naturalWidth));
 // Versión gris (para lo que está triste): se hace con modos de mezcla, sin leer píxeles (funciona abriendo el archivo directo)
@@ -119,33 +119,35 @@ function play(n, vol, maxDur) {
    mientras falten, se usan los antiguos de assets/voz o se salta la frase. */
 const VOZ_NUEVA = new Set(window.VOZ_LISTA || []);
 const VOZ_VIEJA = { p1: 'muybien', p2: 'excelente', p3: 'super', p4: 'muybien', p5: 'excelente', e_vamos: 'tupuedes', e_casi: 'casi', q_puerta: 'puerta', w_win: 'lograste', p_todo: 'gracias', eningles: 'eningles', q_busca: 'busca', intro0: 'intro0', intro1: 'intro1', intro2: 'intro2' };
-const VOZ = {}; let vozQ = [], vozCur = null, talkCD = 0;
+const VOZ = {}; let vozQ = [], vozCur = null, talkCD = 0, vozGen = 0, vozPrio = false;
 function clipSrc(k) {
   if (k === '_') return '_';
   if (VOZ_NUEVA.has(k)) return 'assets/voz2/' + k + '.mp3';
   const old = VOZ_VIEJA[k] || (/^(en_|n\d|cuanto|mas|menos)/.test(k) ? k : null);
   return old ? 'assets/voz/' + old + '.mp3' : null;
 }
-function speak(list, force) {
+function speak(list, force, prio) {
   if (save.muted || !audioOK) return;
   list = list.filter(k => clipSrc(k)); if (!list.length) return;
-  if (vozCur && !force) { vozQ = vozQ.concat(list); return; }
-  if (vozCur) { try { vozCur.pause(); } catch (e) {} vozCur.onended = null; }
-  vozQ = list.slice(); nextVoz();
+  // no se corta lo que está diciendo el búho: lo nuevo espera su turno
+  if (vozCur && (!force || (vozPrio && !prio))) { vozQ = vozQ.concat(list); return; }
+  if (vozCur) { try { vozCur.onended = null; vozCur.onerror = null; vozCur.pause(); } catch (e) {} }
+  vozPrio = !!prio; vozQ = list.slice(); const gen = ++vozGen; nextVoz(gen);
 }
-function nextVoz() {
+function nextVoz(gen) {
+  if (gen !== vozGen) return; // aviso atrasado de una tanda que ya fue cortada
   const n = vozQ.shift();
-  if (!n) { vozCur = null; MUS.game.volume = 0.22; return; }
-  if (n === '_') { vozCur = vozCur || { pause() {} }; setTimeout(nextVoz, 650); return; } // pausa entre palabras
+  if (!n) { vozCur = null; vozPrio = false; MUS.game.volume = 0.22; return; }
+  if (n === '_') { vozCur = { pause() {} }; setTimeout(() => nextVoz(gen), 650); return; } // pausa entre palabras
   const a = VOZ[n] || (VOZ[n] = new Audio(clipSrc(n)));
   vozCur = a; MUS.game.volume = 0.07;
   try { a.currentTime = 0; } catch (e) {}
   // los clips viejos en inglés eran muy rápidos: se tocan más lento sin cambiar el tono
   a.preservesPitch = true; a.playbackRate = !VOZ_NUEVA.has(n) && /^en_/.test(n) ? 0.78 : 1;
-  a.onended = () => setTimeout(nextVoz, 160); a.onerror = nextVoz;
-  const pr = a.play(); if (pr && pr.catch) pr.catch(() => nextVoz());
+  a.onended = () => setTimeout(() => nextVoz(gen), 160); a.onerror = () => nextVoz(gen);
+  const pr = a.play(); if (pr && pr.catch) pr.catch(() => { if (vozCur === a) nextVoz(gen); });
 }
-function shutUp() { vozQ = []; if (vozCur) { vozCur.onended = null; try { vozCur.pause(); } catch (e) {} vozCur = null; } MUS.game.volume = 0.22; }
+function shutUp() { vozQ = []; vozGen++; vozPrio = false; if (vozCur) { vozCur.onended = null; try { vozCur.pause(); } catch (e) {} vozCur = null; } MUS.game.volume = 0.22; }
 const pick = a => a[Math.floor(Math.random() * a.length)];
 // Comentario de la compañera: sólo si no está hablando, con probabilidad y pausa entre comentarios
 function chat(keys, prob, cd) {
@@ -613,7 +615,7 @@ function askQuiz(q) {
   q.state = 'ask'; q.Q = makeQuestion(q);
   const v = []; if (!said.puerta) { said.puerta = 1; v.push('q_puerta'); }
   if (q.Q.kind === 'eng' && !said.busca) { said.busca = 1; v.push('q_busca'); }
-  speak(v.concat(questionVoice(q.Q)), true);
+  speak(v.concat(questionVoice(q.Q)), true, true);
 }
 function hitBlock(bl) {
   const q = bl.quiz; bl.bump = 1;
@@ -622,7 +624,7 @@ function hitBlock(bl) {
   if (Q.opts[bl.i] === Q.ans) {
     bl.right = true; q.got++; q.bump = 1;
     addStars(q.got >= q.need ? 3 : 1, bl.x + bl.w / 2, bl.y); burst(bl.x + bl.w / 2, bl.y - 10, 'heart', 8, '#ff7fb6'); play(q.got >= q.need ? 'win' : 'star', 0.5);
-    speak(en ? ['en_greatjob'].concat(wordVoice(Q)) : [pick(['p1', 'p2', 'p3', 'p5'])].concat(wordVoice(Q)), true); talkCD = 6;
+    speak(en ? ['en_greatjob'].concat(wordVoice(Q)) : [pick(['p1', 'p2', 'p3', 'p5'])].concat(wordVoice(Q)), true, true); talkCD = 6;
     if (Q.kind === 'eng') wordCard(bl.x + bl.w / 2, bl.y - 90, Q.ans, WORDS[Q.ans][0], WORDS[Q.ans][1]);
     if (Q.kind === 'col') wordCard(bl.x + bl.w / 2, bl.y - 90, COLS[Q.ans][3], COLS[Q.ans][0], COLS[Q.ans][1]);
     if (q.got >= q.need) q.state = 'done'; else { q.state = 'next'; q.nextT = 2.6; }
@@ -630,7 +632,7 @@ function hitBlock(bl) {
     // equivocada: se muestra cuál era, se dice la respuesta y viene OTRA pregunta (no se puede pasar descartando)
     bl.wrong = true; q.wrongs++; sfx.hurt();
     const ok = q.blocks.find(x => Q.opts[x.i] === Q.ans); if (ok) ok.reveal = true;
-    speak(['e_casi'].concat(wordVoice(Q)), true);
+    speak(['e_casi'].concat(wordVoice(Q)), true, true);
     if (ok && Q.kind === 'eng') wordCard(ok.x + ok.w / 2, ok.y - 90, Q.ans, WORDS[Q.ans][0], WORDS[Q.ans][1]);
     if (ok && Q.kind === 'col') wordCard(ok.x + ok.w / 2, ok.y - 90, COLS[Q.ans][3], COLS[Q.ans][0], COLS[Q.ans][1]);
     q.state = 'next'; q.nextT = 3.4;
@@ -710,8 +712,12 @@ function doEffect(a) {
   else if (a.type === 'toss') {
     const n = P.bag; P.bag = 0; o.sq = 1; o.count += n; L.tossed = (L.tossed || 0) + n; o.pop = 1; play('bin', 0.7);
     for (let i = 0; i < n; i++) parts.push({ x: P.x + P.w / 2 + P.face * 40, y: P.y + 10, vx: P.face * (30 + i * 25), vy: -260 - i * 40, life: 0.5, max: 0.5, kind: 'dust', color: '#e9e4d8', size: 6, rot: 0 });
-    addEco(n, o.x, o.y - 60); say('🗑️ ¡' + L.tossed + (L.tossed === 1 ? ' basura' : ' basuras') + ' al basurero!', 1.6);
-    if (!said.recycle) { said.recycle = 1; wordCard(o.x, o.y - 140, '♻️', 'Reciclar', 'Recycle!'); talkCD = 5; setTimeout(() => speak(['en_recycle'], true), 450); } else praise(0.45);
+    addEco(n, o.x, o.y - 60);
+    const cnt = []; for (let i = L.tossed - n + 1; i <= L.tossed; i++) cnt.push(i);
+    say('🗑️ ' + cnt.map(i => NUMS_EN[i] ? i + ' ' + NUMS_EN[i] : i).join(', ') + '!', 1.8);
+    const cv = cnt.map(i => 'num_' + i);
+    if (!said.recycle) { said.recycle = 1; wordCard(o.x, o.y - 140, '♻️', 'Reciclar', 'Recycle!'); talkCD = 5; setTimeout(() => speak(['en_recycle'].concat(cv), true), 450); }
+    else { speak(cv); talkCD = Math.max(talkCD, 3); }
   }
   else if (a.type === 'water') { o.done = true; play('grow', 0.7); addEco(1, o.x, o.y - 40); const n = FLOWERS[o.c % 4]; setTimeout(() => teach(n, o.x, o.y - 130), 500); }
   else if (a.type === 'plant') { o.done = true; play('grow', 0.7); addEco(1, o.x, o.y - 30); if (!said.plant) { said.plant = 1; wordCard(o.x, o.y - 160, '🌳', 'Plantar un árbol', 'Plant a tree!'); speak(['en_plant'], true); talkCD = 5; } else praise(0.5); }
@@ -841,9 +847,9 @@ function updateLife(dt) {
   });
   for (const q of L.quizzes) {
     if (q.state === 'idle' && state === 'play' && cx > q.owl.x - 60) askQuiz(q);
-    if (q.state === 'next' && (q.nextT -= dt) <= 0) {
+    if (q.state === 'next' && (q.nextT -= dt) <= 0 && !vozCur) { // espera a que termine de hablar
       for (const bl of q.blocks) { bl.wrong = bl.right = bl.reveal = false; bl.bump = 1; }
-      q.state = 'ask'; q.Q = makeQuestion(q); speak(questionVoice(q.Q), true);
+      q.state = 'ask'; q.Q = makeQuestion(q); speak(questionVoice(q.Q), true, true);
     }
     for (const bl of q.blocks) bl.bump = Math.max(0, bl.bump - dt * 4);
     q.bump = Math.max(0, q.bump - dt * 0.8);
@@ -1358,7 +1364,7 @@ const $ = id => document.getElementById(id);
 function setState(s) {
   state = s;
   $('scrTitle').classList.toggle('on', s === 'title'); $('scrSelect').classList.toggle('on', s === 'select');
-  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrVet').classList.toggle('on', s === 'vet'); $('scrFin').classList.toggle('on', s === 'fin'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
+  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrVet').classList.toggle('on', s === 'vet'); $('scrFin').classList.toggle('on', s === 'fin'); $('scrFood').classList.toggle('on', s === 'food'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
   const inGame = s === 'play' || s === 'pause' || s === 'win' || s === 'intro';
   $('hud').classList.toggle('on', inGame); $('touch').classList.toggle('on', isTouch && s === 'play');
   musWant = inGame ? 'game' : 'menu'; syncMusic(); rotTipCheck();
@@ -1391,7 +1397,7 @@ function showWin() {
   $('winCount').innerHTML = '🌍 ' + ecoDone + ' / ' + L.total + ' &nbsp; ⭐ ' + starsGot + ' &nbsp; 🗑️ ' + (L.tossed || 0) + (followers.length ? ' &nbsp; 🐾 ' + followers.length : '');
   $('winTip').textContent = all ? (lastLvl ? '¡Cuidaste todo el planeta! 🎉' : '¡Gracias por cuidar el planeta!') : '¿Volvemos a ayudar a los que faltaron?';
   const mini = L.idx % 2 === 1; // después del 2º, 4º y 6º mundo viene un minijuego
-  $('btnNext').textContent = mini ? (L.idx === 3 ? '🏥 ¡Veterinaria! ▶' : '🎲 ¡Minijuego! ▶') : 'Siguiente ▶';
+  $('btnNext').textContent = mini ? (L.idx === 3 ? '🏥 ¡Veterinaria! ▶' : L.idx === 5 ? '🥦 ¡Comida sana! ▶' : '🎲 ¡Minijuego! ▶') : 'Siguiente ▶';
   $('btnNext').style.display = lastLvl && !mini ? 'none' : '';
   $('scrWin').classList.add('on');
 }
@@ -1407,7 +1413,7 @@ $('btnMenu').onclick = $('btnMenu2').onclick = showSelect;
 $('btnNext').onclick = () => {
   const nxt = L.idx + 1, go = () => nxt < LEVELS.length ? startLevel(nxt) : showFinale();
   // después del 2º y 6º mundo: unir parejas; después del 4º: la veterinaria
-  if (L.idx === 3) startVet(go); else if (L.idx % 2 === 1) startMini(Math.floor(L.idx / 2), go); else go();
+  if (L.idx === 3) startVet(go); else if (L.idx === 5) startFood(go); else if (L.idx % 2 === 1) startMini(Math.floor(L.idx / 2), go); else go();
 };
 
 /* ---------- Minijuego: unir parejas (vocales, colores y animales) ----------
@@ -1555,6 +1561,84 @@ function vetTool(b) {
       else { $('vetDots').innerHTML = '💖💖'; $('vetHelp').innerHTML = '🩺 ¡Eres una gran doctora, Amanda!'; speak(['p2'], true); setTimeout(() => { const d = vet.done; vet = null; d(); }, 2600); }
     }, 3400);
   }, 1500);
+}
+
+/* ---------- Minijuego: comida sana (healthy) o chatarra (junk food) ----------
+   Ronda 1: aparece una comida, Tilly la dice en inglés y Amanda elige 💪 Healthy o 🍟 Junk food.
+   Ronda 2: arma una lonchera sana con 4 comidas healthy y, al final, el agua (¡hay que tomar agua!). */
+const FOODS = { // dibujo → [inglés, español, sana?, emoji si falta el dibujo]
+  c_carrot: ['Carrot', 'Zanahoria', 1, '🥕'], c_broccoli: ['Broccoli', 'Brócoli', 1, '🥦'], c_tomato: ['Tomato', 'Tomate', 1, '🍅'], c_corn: ['Corn', 'Choclo', 1, '🌽'],
+  c_lettuce: ['Lettuce', 'Lechuga', 1, '🥬'], c_cucumber: ['Cucumber', 'Pepino', 1, '🥒'], c_milk: ['Milk', 'Leche', 1, '🥛'], c_water: ['Water', 'Agua', 1, '💧'],
+  j_burger: ['Burger', 'Hamburguesa', 0, '🍔'], j_fries: ['French fries', 'Papas fritas', 0, '🍟'], j_soda: ['Soda', 'Bebida', 0, '🥤'], j_candy: ['Candy', 'Dulces', 0, '🍬'],
+  j_donut: ['Donut', 'Dona', 0, '🍩'], j_chips: ['Chips', 'Papitas', 0, '🥔'], j_icecream: ['Ice cream', 'Helado', 0, '🍦'], j_lollipop: ['Lollipop', 'Chupete', 0, '🍭'] };
+let food = null;
+function foodPic(k) { if (IMG[k] && IMG[k].naturalWidth) return '<img src="' + IMG[k].src + '" alt="">'; return '<span class="emo">' + (FOODS[k] ? FOODS[k][3] : '') + '</span>'; }
+function foodName(k) { return FOODS[k] ? FOODS[k] : FRUTAS[k] ? [FRUTAS[k][1], FRUTAS[k][0], 1] : ['', '', 1]; }
+function foodVoz(k) { return FOODS[k] ? 'fd_' + k.slice(2) : 'fe_' + frBase(k); }
+function startFood(done) {
+  food = { round: 0, done };
+  setState('food'); $('scrWin').classList.remove('on'); speak(['fd_intro'], true); foodRound1();
+}
+function foodDots() { $('foodDots').innerHTML = [0, 1].map(i => '<span>' + (i < food.round ? '⭐' : i === food.round ? '🌟' : '⚪') + '</span>').join(''); }
+function foodRound1() {
+  const healthy = Object.keys(FOODS).filter(k => FOODS[k][2] && k !== 'c_water'), junk = Object.keys(FOODS).filter(k => !FOODS[k][2]);
+  const fr = (save.fruits || []).filter(k => FRUTAS[k]);
+  food.list = shuffle(shuffle(healthy).slice(0, 3).concat(shuffle(fr).slice(0, 1), shuffle(junk).slice(0, 4))); food.i = 0;
+  $('foodTitle').textContent = '🥦 ¿Healthy o junk food?'; foodDots();
+  $('foodArea').innerHTML = '<div class="food-bar" id="foodBar"></div><div class="food-item" id="foodItem"></div><div class="food-word" id="foodWord">&nbsp;</div>' +
+    '<div class="food-btns"><button class="fb good" id="fbGood"><span>💪</span><b>Healthy</b><small>Comida sana</small></button>' +
+    '<button class="fb junk" id="fbJunk"><span>🍟</span><b>Junk food</b><small>Comida chatarra</small></button></div>';
+  $('fbGood').onclick = () => foodAnswer(1, $('fbGood')); $('fbJunk').onclick = () => foodAnswer(0, $('fbJunk'));
+  foodShow(false);
+}
+function foodShow(talk) {
+  const k = food.list[food.i], n = foodName(k); food.busy = false;
+  $('foodBar').innerHTML = food.list.map((x, i) => '<span class="' + (i < food.i ? 'ok' : i === food.i ? 'now' : '') + '"></span>').join('');
+  $('foodItem').innerHTML = foodPic(k); $('foodItem').className = 'food-item in';
+  $('foodWord').innerHTML = '<span class="en">' + n[0] + '</span> · ' + n[1];
+  $('foodHelp').innerHTML = '¿Es comida <b>sana</b> o <b>chatarra</b>?';
+  if (talk !== false) speak([foodVoz(k)], true); else speak([foodVoz(k)]);
+}
+function foodAnswer(good, b) {
+  if (food.busy) return; initAudio();
+  const k = food.list[food.i], ok = !!foodName(k)[2] === !!good;
+  if (!ok) { b.classList.add('bad'); sfx.hurt(); setTimeout(() => b.classList.remove('bad'), 400); speak(['e_casi', foodVoz(k)], true); $('foodHelp').innerHTML = '🤔 Mmm… ¡piénsalo otra vez!'; return; }
+  food.busy = true; play('star', 0.5);
+  $('foodItem').className = 'food-item ' + (good ? 'go-good' : 'go-junk');
+  $('foodHelp').innerHTML = good ? '💪 ¡Sí! Es <b>healthy</b>: nos da energía' : '🍟 ¡Sí! Es <b>junk food</b>: solo de vez en cuando';
+  speak([good ? 'fd_healthy' : 'fd_junk'], true);
+  setTimeout(() => { food.i++; if (food.i < food.list.length) foodShow(); else { food.round++; foodRound2(); } }, 2300);
+}
+function foodRound2() {
+  const healthy = shuffle(Object.keys(FOODS).filter(k => FOODS[k][2] && k !== 'c_water')).slice(0, 4), junk = shuffle(Object.keys(FOODS).filter(k => !FOODS[k][2])).slice(0, 3);
+  food.box = []; food.water = false; food.busy = false;
+  $('foodTitle').textContent = '🍱 ¡Arma una lonchera sana!'; foodDots();
+  $('foodHelp').innerHTML = 'Elige <b>4 comidas healthy</b> y no olvides el <b>agua</b> 💧';
+  $('foodArea').innerHTML = '<div class="lunch" id="lunch">' + [0, 1, 2, 3].map(i => '<span class="slot" data-s="' + i + '"></span>').join('') + '<span class="slot water" id="slotWater">💧</span></div>' +
+    '<div class="food-grid" id="foodGrid">' + shuffle(healthy.concat(junk, ['c_water'])).map(k => '<button class="fg" data-k="' + k + '">' + foodPic(k) + '<small>' + FOODS[k][0] + '</small></button>').join('') + '</div>';
+  $('foodGrid').querySelectorAll('.fg').forEach(b => b.onclick = () => foodPick(b));
+  speak(['fd_lonchera'], true);
+}
+function foodPick(b) {
+  if (food.busy || b.classList.contains('used')) return; initAudio();
+  const k = b.dataset.k, n = FOODS[k];
+  if (!n[2]) { b.classList.add('bad'); sfx.hurt(); setTimeout(() => b.classList.remove('bad'), 400); speak(['fd_nojunk'], true); $('foodHelp').innerHTML = '🍟 ¡Esa es <b>junk food</b>! Busca algo sano'; return; }
+  if (k === 'c_water') {
+    if (food.box.length < 4) { speak([foodVoz(k)], true); $('foodHelp').innerHTML = '💧 ¡El agua va al final! Primero elige <b>' + (4 - food.box.length) + '</b> comidas sanas'; return; }
+    b.classList.add('used'); $('slotWater').innerHTML = foodPic(k); $('slotWater').classList.add('full'); play('splash', 0.4);
+    food.busy = true; $('foodHelp').innerHTML = '💧 <b>Drink water!</b> El agua nos da energía'; speak(['fd_agua'], true);
+    setTimeout(foodEnd, 3800); return;
+  }
+  if (food.box.length >= 4) { $('foodHelp').innerHTML = '🍱 ¡La lonchera está llena! Ahora el <b>agua</b> 💧'; return; }
+  const slot = $('lunch').querySelector('[data-s="' + food.box.length + '"]');
+  food.box.push(k); b.classList.add('used'); slot.innerHTML = foodPic(k); slot.classList.add('full'); play('star', 0.4);
+  speak([foodVoz(k)], true);
+  $('foodHelp').innerHTML = food.box.length < 4 ? '¡Muy bien! Faltan <b>' + (4 - food.box.length) + '</b>' : '🍱 ¡Lonchera lista! Ahora el <b>agua</b> 💧';
+}
+function foodEnd() {
+  food.round = 2; $('foodDots').innerHTML = '⭐⭐'; $('foodTitle').textContent = '🎉 ¡Muy bien, Amanda!';
+  $('foodHelp').innerHTML = '💪 Comer sano y tomar agua nos hace fuertes'; speak(['fd_fin'], true); play('win', 0.5);
+  setTimeout(() => { const d = food.done; food = null; d(); }, 4200);
 }
 
 /* ---------- Final del juego: el planeta feliz ----------

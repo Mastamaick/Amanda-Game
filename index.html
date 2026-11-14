@@ -162,6 +162,38 @@
   @keyframes eat { to { left:50%; top:40%; transform:translate(-50%, -50%) scale(.2); opacity:0; } }
   @keyframes vpop { 0% { transform:translate(-50%, -50%) scale(.3); } 100% { transform:translate(-50%, -50%) scale(1); } }
   @media (max-height:520px) { .vet-pet { width:min(40vh, 60vw); } .card.vet h2 { font-size:22px; } .vet-help { min-height:2.2em; font-size:17px; } }
+  /* ---- Minijuego de comida sana ---- */
+  #scrFood { background:linear-gradient(#fff4d6, #eafbe4 60%, #d8f5ff); }
+  .card.food { width:min(96vw, 640px); padding:12px 16px; }
+  .card.food h2 { margin:0; }
+  .food-bar { display:flex; gap:5px; justify-content:center; margin:2px 0 6px; }
+  .food-bar span { width:22px; height:9px; border-radius:6px; background:#e3d9ea; } .food-bar span.ok { background:#3f9d55; } .food-bar span.now { background:var(--pink); }
+  .food-item { width:min(30vh, 46vw, 190px); height:min(30vh, 46vw, 190px); margin:0 auto; display:flex; align-items:center; justify-content:center; }
+  .food-item img { max-width:100%; max-height:100%; filter:drop-shadow(0 6px 0 rgba(74,47,85,.15)); }
+  .food-item .emo, .fg .emo, .slot .emo { font-size:min(20vh, 120px); line-height:1; }
+  .fg .emo, .slot .emo { font-size:clamp(28px, 7vh, 46px); }
+  .food-item.in { animation:foodIn .45s cubic-bezier(.3,1.6,.5,1); }
+  .food-item.go-good { animation:goLeft .7s ease-in forwards; } .food-item.go-junk { animation:goRight .7s ease-in forwards; }
+  .food-word { font-size:clamp(20px, 3.6vw, 30px); font-weight:700; min-height:1.3em; } .food-word .en { color:var(--pink-d); }
+  .food-btns { display:flex; gap:14px; justify-content:center; margin-top:6px; }
+  .fb { font-family:inherit; color:var(--ink); border:4px solid var(--ink); border-radius:24px; padding:8px 18px; min-width:min(40vw, 200px); cursor:pointer; box-shadow:0 6px 0 rgba(74,47,85,.3);
+    display:flex; flex-direction:column; align-items:center; line-height:1.1; }
+  .fb span { font-size:clamp(30px, 7vh, 44px); } .fb b { font-size:clamp(20px, 3.6vw, 28px); } .fb small { font-size:14px; font-weight:700; opacity:.75; }
+  .fb.good { background:#c9f5d4; } .fb.junk { background:#ffd9c9; }
+  .fb:active { transform:translateY(4px); box-shadow:0 2px 0 rgba(74,47,85,.3); } .fb.bad { animation:shake .35s; }
+  .lunch { display:flex; gap:6px; justify-content:center; padding:8px; margin:4px auto 8px; width:fit-content; background:#7fc6f5; border:4px solid var(--ink); border-radius:20px; }
+  .slot { width:clamp(50px, 12vh, 72px); height:clamp(50px, 12vh, 72px); border-radius:14px; background:#fff; border:3px dashed #9fb6c8; display:flex; align-items:center; justify-content:center; font-size:26px; opacity:.85; }
+  .slot.full { border-style:solid; border-color:#3f9d55; opacity:1; animation:foodIn .35s; } .slot img { max-width:92%; max-height:92%; }
+  .slot.water { border-color:#5bb8ff; }
+  .food-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .fg { width:clamp(62px, 15vh, 86px); height:clamp(70px, 17vh, 96px); border-radius:18px; border:4px solid var(--ink); background:#fff; box-shadow:0 5px 0 rgba(74,47,85,.3); cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:inherit; color:var(--ink); padding:3px; }
+  .fg img { max-width:90%; max-height:70%; } .fg small { font-size:11px; font-weight:700; }
+  .fg.used { opacity:.25; } .fg.bad { animation:shake .35s; background:#ffd6d6; }
+  @keyframes foodIn { 0% { transform:scale(.2); } 100% { transform:scale(1); } }
+  @keyframes goLeft { to { transform:translate(-70%, 60%) scale(.3); opacity:0; } }
+  @keyframes goRight { to { transform:translate(70%, 60%) scale(.3); opacity:0; } }
+  @media (max-height:520px) { .food-item { width:24vh; height:24vh; } .card.food h2 { font-size:22px; } }
   /* ---- Final del juego: el planeta feliz ---- */
   #scrFin { background:radial-gradient(circle at 50% 38%, #fff6c9 0, #bfe9ff 38%, #8fd3ff 70%, #7fc6f5); overflow:hidden; flex-direction:column; }
   .fin-rays { position:absolute; left:50%; top:38%; width:180vmax; height:180vmax; margin:-90vmax 0 0 -90vmax; pointer-events:none;
@@ -326,6 +358,15 @@
   </div>
 </div>
 
+<div class="overlay" id="scrFood">
+  <div class="card food">
+    <h2 id="foodTitle">🥦 ¡Comida sana!</h2>
+    <p class="vet-help" id="foodHelp">&nbsp;</p>
+    <div id="foodArea"></div>
+    <div class="mini-dots" id="foodDots"></div>
+  </div>
+</div>
+
 <div class="overlay" id="scrFin">
   <div class="fin-rays"></div>
   <div class="fin-stage">
@@ -375,7 +416,7 @@
 </div>
 
 <!-- subir el número de versión (?v=) en cada cambio para que la tablet no use una copia vieja -->
-<script src="assets/voz2/lista.js?v=16"></script>
-<script src="game.js?v=16"></script>
+<script src="assets/voz2/lista.js?v=17"></script>
+<script src="game.js?v=17"></script>
 </body>
 </html>
