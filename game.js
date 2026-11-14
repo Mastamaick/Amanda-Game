@@ -638,6 +638,7 @@ function updateHud() {
   let h = ''; for (let i = 0; i < MAX_HEARTS; i++) h += '<span class="' + (i < hearts ? '' : 'off') + '">❤️</span>';
   document.getElementById('hearts').innerHTML = h;
   document.getElementById('stars').textContent = starsGot;
+  document.getElementById('tossed').textContent = L.tossed || 0;
   document.getElementById('eco').textContent = ecoDone + '/' + L.total;
   document.getElementById('ecoFill').style.width = (L.total ? ecoDone / L.total * 100 : 0) + '%';
 }
@@ -698,9 +699,9 @@ function doEffect(a) {
     if (!said.pickup) { said.pickup = 1; wordCard(o.x, o.y - 120, '🗑️', 'Recoger', 'Pick it up!'); speak(['en_pickup'], true); talkCD = 5; }
   }
   else if (a.type === 'toss') {
-    const n = P.bag; P.bag = 0; o.sq = 1; o.count += n; play('bin', 0.7);
+    const n = P.bag; P.bag = 0; o.sq = 1; o.count += n; L.tossed = (L.tossed || 0) + n; o.pop = 1; play('bin', 0.7);
     for (let i = 0; i < n; i++) parts.push({ x: P.x + P.w / 2 + P.face * 40, y: P.y + 10, vx: P.face * (30 + i * 25), vy: -260 - i * 40, life: 0.5, max: 0.5, kind: 'dust', color: '#e9e4d8', size: 6, rot: 0 });
-    addEco(n, o.x, o.y - 60);
+    addEco(n, o.x, o.y - 60); say('🗑️ ¡' + L.tossed + (L.tossed === 1 ? ' basura' : ' basuras') + ' al basurero!', 1.6);
     if (!said.recycle) { said.recycle = 1; wordCard(o.x, o.y - 140, '♻️', 'Reciclar', 'Recycle!'); talkCD = 5; setTimeout(() => speak(['en_recycle'], true), 450); } else praise(0.45);
   }
   else if (a.type === 'water') { o.done = true; play('grow', 0.7); addEco(1, o.x, o.y - 40); const n = FLOWERS[o.c % 4]; setTimeout(() => teach(n, o.x, o.y - 130), 500); }
@@ -1057,6 +1058,11 @@ function drawTrash(t) {
 }
 function drawBin(b) {
   const q = b.sq; drawImg('bin', b.x, b.y + 4, 66, 1 + q * 0.12, 1 - q * 0.16);
+  if (b.count > 0) { // cuántas basuras se han botado aquí
+    b.pop = Math.max(0, (b.pop || 0) - 0.03); const s = 1 + b.pop * 0.5, cx = b.x + 26, cy = b.y - 70;
+    ctx.save(); ctx.translate(cx, cy); ctx.scale(s, s); circ(0, 0, 15); fs('#5fd08a', 3);
+    ctx.fillStyle = '#fff'; ctx.font = '700 18px Fredoka, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(b.count, 0, 1); ctx.restore();
+  }
 }
 function drawPlant(p) {
   const x = p.x, y = p.y, n = FLOWERS[p.c % 4];
@@ -1343,7 +1349,7 @@ const $ = id => document.getElementById(id);
 function setState(s) {
   state = s;
   $('scrTitle').classList.toggle('on', s === 'title'); $('scrSelect').classList.toggle('on', s === 'select');
-  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
+  $('scrPause').classList.toggle('on', s === 'pause'); $('scrPad').classList.toggle('on', s === 'pad'); $('scrMini').classList.toggle('on', s === 'mini'); $('scrIntro').classList.toggle('on', s === 'intro'); $('scrWin').classList.remove('on');
   const inGame = s === 'play' || s === 'pause' || s === 'win' || s === 'intro';
   $('hud').classList.toggle('on', inGame); $('touch').classList.toggle('on', isTouch && s === 'play');
   musWant = inGame ? 'game' : 'menu'; syncMusic(); rotTipCheck();
@@ -1373,9 +1379,11 @@ function showWin() {
   winShown = true; const n = L.rating, lastLvl = L.idx === LEVELS.length - 1, all = ecoDone >= L.total;
   $('winTitle').textContent = all ? L.theme.happy : '¡Lo lograste!';
   $('winStars').innerHTML = [0, 1, 2].map(i => '<span class="' + (i < n ? '' : 'off') + '">⭐</span>').join('');
-  $('winCount').innerHTML = '🌍 ' + ecoDone + ' / ' + L.total + ' &nbsp; ⭐ ' + starsGot + (followers.length ? ' &nbsp; 🐾 ' + followers.length : '');
+  $('winCount').innerHTML = '🌍 ' + ecoDone + ' / ' + L.total + ' &nbsp; ⭐ ' + starsGot + ' &nbsp; 🗑️ ' + (L.tossed || 0) + (followers.length ? ' &nbsp; 🐾 ' + followers.length : '');
   $('winTip').textContent = all ? (lastLvl ? '¡Cuidaste todo el planeta! 🎉' : '¡Gracias por cuidar el planeta!') : '¿Volvemos a ayudar a los que faltaron?';
-  $('btnNext').style.display = lastLvl ? 'none' : '';
+  const mini = L.idx % 2 === 1; // después del 2º, 4º y 6º mundo viene un minijuego
+  $('btnNext').textContent = mini ? '🎲 ¡Minijuego! ▶' : 'Siguiente ▶';
+  $('btnNext').style.display = lastLvl && !mini ? 'none' : '';
   $('scrWin').classList.add('on');
 }
 $('gameTitle').textContent = 'La Aventura de ' + HERO_NAME; document.title = 'La Aventura de ' + HERO_NAME;
@@ -1387,7 +1395,76 @@ $('btnPause').onclick = () => { if (state === 'play') pause(); };
 $('btnResume').onclick = resume;
 $('btnRestart').onclick = $('btnAgain').onclick = () => startLevel(L.idx);
 $('btnMenu').onclick = $('btnMenu2').onclick = showSelect;
-$('btnNext').onclick = () => startLevel(L.idx + 1);
+$('btnNext').onclick = () => {
+  const nxt = L.idx + 1, go = () => nxt < LEVELS.length ? startLevel(nxt) : showSelect();
+  if (L.idx % 2 === 1) startMini(Math.floor(L.idx / 2), go); else go();
+};
+
+/* ---------- Minijuego: unir parejas (vocales, colores y animales) ----------
+   Se toca algo de la izquierda y luego su pareja de la derecha: se dibuja una línea y la voz dice la palabra
+   en español y en inglés. 3 rondas; después sigue el siguiente mundo. */
+const VOWELS = {
+  A: [['abeja', 'Abeja', 'Bee', 'bee'], ['ardilla', 'Ardilla', 'Squirrel', 'squirrel'], ['arbol', 'Árbol', 'Tree', 'tree'], ['arcoiris', 'Arcoíris', 'Rainbow', 'rainbow'], ['avion', 'Avión', 'Airplane', '✈️']],
+  E: [['erizo', 'Erizo', 'Hedgehog', 'hedgehog'], ['estrella', 'Estrella', 'Star', '⭐'], ['elefante', 'Elefante', 'Elephant', '🐘']],
+  I: [['iguana', 'Iguana', 'Iguana', '🦎'], ['iglu', 'Iglú', 'Igloo', '🛖'], ['isla', 'Isla', 'Island', '🏝️']],
+  O: [['oveja', 'Oveja', 'Sheep', 'lamb'], ['oso', 'Oso', 'Bear', '🐻'], ['ola', 'Ola', 'Wave', '🌊']],
+  U: [['uvas', 'Uvas', 'Grapes', '🍇'], ['unicornio', 'Unicornio', 'Unicorn', '🦄'], ['uno', 'Uno', 'One', '1️⃣']],
+};
+const COLOR_THINGS = { red: ['apple', 'Manzana'], yellow: ['chick', 'Pollito'], green: ['frog', 'Rana'], pink: ['pig', 'Chanchito'], orange: ['fox', 'Zorrito'], brown: ['beaver', 'Castor'] };
+let mini = null;
+function picHTML(p, cls) { return IMG[p] || /^[a-z_]+$/.test(p) ? '<img class="' + (cls || '') + '" src="' + (IMG[p] ? IMG[p].src : '') + '" alt="">' : p; }
+function startMini(n, done) {
+  mini = { round: 0, rounds: ['vow', 'col', 'ani'], done, n };
+  setState('mini'); $('scrWin').classList.remove('on'); speak(['mg_intro'], true); miniRound();
+}
+function miniRound() {
+  const m = mini, kind = m.rounds[m.round]; m.sel = null; m.pairs = []; m.left = []; m.right = [];
+  $('miniDots').innerHTML = m.rounds.map((_, i) => '<span>' + (i < m.round ? '⭐' : i === m.round ? '🌟' : '⚪') + '</span>').join('');
+  $('miniWord').innerHTML = '&nbsp;';
+  if (kind === 'vow') {
+    $('miniTitle').textContent = '🔤 ¿Con qué letra empieza?';
+    const vs = shuffle(Object.keys(VOWELS)).slice(0, 4);
+    for (const v of vs) { const it = pick(VOWELS[v]); m.pairs.push({ l: '<span>' + v + '<small style="font-size:.6em">' + v.toLowerCase() + '</small></span>', r: picHTML(it[3]), es: it[1], en: it[2], voz: ['vw_' + it[0]], lv: ['vl_' + v.toLowerCase()] }); }
+  } else if (kind === 'col') {
+    $('miniTitle').textContent = '🎨 Une cada color';
+    for (const c of shuffle(Object.keys(COLOR_THINGS)).slice(0, 4)) { const [img, es] = COLOR_THINGS[c]; m.pairs.push({ l: '<span class="blob" style="background:' + COLS[c][2] + '"></span>', r: picHTML(img), es: COLS[c][0] + ' · ' + es, en: COLS[c][1], voz: ['col_' + c] }); }
+  } else {
+    $('miniTitle').textContent = '🐾 Encuentra su sombra';
+    const met = (save.met || []).filter(k => FH[k]), pool = met.length >= 4 ? met : Object.keys(FH);
+    for (const a of shuffle(pool.slice()).slice(0, 4)) m.pairs.push({ l: picHTML(a), r: picHTML(a, 'shadow'), es: WORDS[a][0], en: WORDS[a][1], voz: ['eningles', 'en_' + a] });
+  }
+  const order = shuffle(m.pairs.map((_, i) => i));
+  $('miniL').innerHTML = m.pairs.map((p, i) => '<button class="mi-b" data-i="' + i + '">' + p.l + '</button>').join('');
+  $('miniR').innerHTML = order.map(i => '<button class="mi-b" data-i="' + i + '">' + m.pairs[i].r + '</button>').join('');
+  $('miniLines').innerHTML = '';
+  $('miniL').querySelectorAll('.mi-b').forEach(b => b.onclick = () => miniPick('l', b));
+  $('miniR').querySelectorAll('.mi-b').forEach(b => b.onclick = () => miniPick('r', b));
+}
+function miniPick(side, b) {
+  const m = mini; if (b.classList.contains('ok')) return;
+  initAudio();
+  if (!m.sel || m.sel.side === side) { // primera elección (o cambia de idea)
+    document.querySelectorAll('#scrMini .mi-b.sel').forEach(x => x.classList.remove('sel'));
+    m.sel = { side, b }; b.classList.add('sel'); play('click', 0.4);
+    const p = m.pairs[+b.dataset.i]; if (side === 'l' && p.lv) speak(p.lv, true);
+    return;
+  }
+  const a = m.sel.b; m.sel = null; a.classList.remove('sel');
+  if (a.dataset.i === b.dataset.i) {
+    const p = m.pairs[+b.dataset.i]; a.classList.add('ok'); b.classList.add('ok'); play('star', 0.5);
+    const L1 = side === 'l' ? b : a, R1 = side === 'l' ? a : b, box = $('miniBoard').getBoundingClientRect(), r1 = L1.getBoundingClientRect(), r2 = R1.getBoundingClientRect();
+    $('miniLines').insertAdjacentHTML('beforeend', '<line x1="' + (r1.right - box.left) + '" y1="' + (r1.top + r1.height / 2 - box.top) + '" x2="' + (r2.left - box.left) + '" y2="' + (r2.top + r2.height / 2 - box.top) + '" stroke="#ff7fb6" stroke-width="7" stroke-linecap="round"/>');
+    $('miniWord').innerHTML = p.es + ' · <span class="en">' + p.en + '</span>';
+    speak(p.voz, true);
+    if ($('miniL').querySelectorAll('.mi-b:not(.ok)').length === 0) {
+      m.round++; burst(P ? P.x : 0, 0, 'star', 1);
+      setTimeout(() => {
+        if (m.round < m.rounds.length) miniRound();
+        else { $('miniDots').innerHTML = '⭐⭐⭐'; $('miniTitle').textContent = '🎉 ¡Muy bien, Amanda!'; speak(['p2'], true); confetti && 0; setTimeout(() => { const d = m.done; mini = null; d(); }, 2600); }
+      }, 2400);
+    }
+  } else { a.classList.add('bad'); b.classList.add('bad'); sfx.hurt(); setTimeout(() => { a.classList.remove('bad'); b.classList.remove('bad'); }, 400); speak(['e_casi'], true); }
+}
 
 /* ---------- Pantalla para elegir los botones del control ---------- */
 const PAD_ACTS = [['jump', '⬆ Saltar'], ['wave', '✋ Ayudar'], ['greet', '👋 Saludar'], ['start', '⏸ Pausa']];
