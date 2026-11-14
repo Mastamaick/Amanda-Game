@@ -60,7 +60,7 @@ const WALK = ['w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
 
 /* ---------------- Animalitos, bichitos y flores (dibujos hechos en Canva) ---------------- */
 const BICHOS = ['elephant', 'giraffe', 'lion', 'monkey', 'panda', 'penguin', 'koala', 'zebra', 'hippo', 'kangaroo', 'flamingo', 'parrot', 'seal', 'octopus', 'dolphin', 'bear', 'cow', 'pig', 'lamb', 'chick', 'hen', 'foal', 'goat', 'llama', 'beaver', 'raccoon', 'mouse', 'chinchilla', 'bunny', 'cat', 'dog', 'bird', 'turtle', 'duck', 'squirrel', 'frog', 'hedgehog', 'fox', 'deer', 'owl', 'snail', 'crab', 'bee', 'gull', 'butterfly', 'ladybug', 'fish', 'sunflower', 'tulip', 'daisy', 'rose', 'apple'];
-const COSAS = ['f_platano', 'f_naranja', 'f_frutilla', 'f_sandia', 'f_pina', 'f_pera', 'f_cereza', 'f_limon', 'f_durazno', 'f_kiwi', 'f_mango', 'f_coco', 'v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
+const COSAS = ['vet_dog_1', 'vet_dog_2', 'vet_dog_3', 'vet_dog_4', 'vet_cat_1', 'vet_cat_2', 'vet_cat_3', 'vet_cat_4', 'f_platano', 'f_naranja', 'f_frutilla', 'f_sandia', 'f_pina', 'f_pera', 'f_cereza', 'f_limon', 'f_durazno', 'f_kiwi', 'f_mango', 'f_coco', 'v_estrella', 'v_avion', 'v_iguana', 'v_iglu', 'v_isla', 'v_ola', 'v_uvas', 'v_unicornio', 'v_oruga', 'v_ojo', 'v_anillo', 'v_paraguas', 't_bottle', 't_can', 't_paper', 't_bag', 't_banana', 't_juice', 'bin', 'sack', 'wilted', 'sprout', 'mush_small', 'mush_big', 'tree', 'pine', 'palm', 'bush', 'rock', 'stump', 'log', 'sign', 'flag', 'platform', 'cloud', 'rainbow', 'shell', 'starfish', 'sandcastle', 'bramble', 'urchin', 'haystack', 'fence', 'lily', 'reeds', 'snowpine', 'snowrock', 'barn'];
 const IMG = {};
 BICHOS.forEach(n => { const im = new Image(); im.src = 'assets/bichos/' + n + '.png'; IMG[n] = im; });
 COSAS.forEach(n => { const im = new Image(); im.src = 'assets/cosas/' + n + '.png'; IMG[n] = im; });
@@ -1497,95 +1497,64 @@ function miniPick(side, b) {
 }
 
 /* ---------- Minijuego: la veterinaria ----------
-   Llega un perrito (y después un gatito) sucio y herido. Amanda elige la herramienta correcta en la bandeja
-   y la usa sobre la mascota: jabón en cada mancha, ducha, inyección, curita en la herida y su premio. */
-const VET_TOOLS = { soap: ['🧼', 'Jabón'], shower: ['🚿', 'Ducha'], shot: ['💉', 'Inyección'], band: ['🩹', 'Curita'], thermo: ['🌡️', 'Termómetro'],
-  pill: ['💊', 'Pastilla'], bear: ['🧸', 'Peluche'], bone: ['🦴', 'Hueso'], fish: ['🐟', 'Pescado'], yarn: ['🧶', 'Lana'] };
-const VET_PETS = [{ pet: 'dog', name: 'perrito', treat: 'bone', hi: 'vet_perro' }, { pet: 'cat', name: 'gatito', treat: 'fish', hi: 'vet_gato' }];
-function vetSteps(P) {
-  return [
-    { tool: 'soap', txt: '🧼 ¡Está muy sucio! Toma el <b>jabón</b>…', go: '…y frota cada mancha 🟤', voz: 'vet_sucio' },
-    { tool: 'shower', txt: '🚿 ¡Ahora enjuágalo con la <b>ducha</b>!', go: 'Toca al ' + P.name + ' 💦', voz: 'vet_ducha' },
-    { tool: 'shot', txt: '💉 Le duele… ¡busca la <b>inyección</b>!', go: 'Toca al ' + P.name + ' (¡pinchazo chiquitito!)', voz: 'vet_inyeccion' },
-    { tool: 'band', txt: '🩹 Ponle una <b>curita</b> en la herida', go: 'Toca la herida roja', voz: 'vet_curita' },
-    { tool: P.treat, txt: VET_TOOLS[P.treat][0] + ' ¡Se portó muy bien! Dale su <b>premio</b>', go: 'Dáselo al ' + P.name, voz: 'vet_premio' },
-  ];
-}
+   Llega un perrito (y después un gatito) sucio y herido. Amanda busca en la bandeja la herramienta correcta:
+   jabón (queda lleno de espuma) → ducha (queda limpio pero con la herida) → inyección (queda sanito y feliz).
+   Cada paso cambia el dibujo de la mascota (4 dibujos por mascota: vet_<animal>_1..4). */
+const VET_TOOLS = { soap: ['🧼', 'Jabón'], shower: ['🚿', 'Ducha'], shot: ['💉', 'Inyección'], thermo: ['🌡️', 'Termómetro'],
+  pill: ['💊', 'Pastilla'], bear: ['🧸', 'Peluche'], bone: ['🦴', 'Hueso'], yarn: ['🧶', 'Lana'] };
+const VET_PETS = [{ pet: 'dog', name: 'perrito', hi: 'vet_perro' }, { pet: 'cat', name: 'gatito', hi: 'vet_gato' }];
+const VET_STEPS = [
+  { tool: 'soap', txt: '🛁 ¡Está muy sucio! Busca el <b>jabón</b> para bañarlo', voz: 'vet_sucio', fx: 'foam' },
+  { tool: 'shower', txt: '🫧 ¡Qué espuma! Ahora enjuágalo con la <b>ducha</b>', voz: 'vet_ducha', fx: 'rain' },
+  { tool: 'shot', txt: '🤕 Está limpio, pero tiene una herida… ¡busca la <b>inyección</b>!', voz: 'vet_inyeccion', fx: 'heal' },
+];
 let vet = null;
+function vetPic(P, n) { const k = 'vet_' + P.pet + '_' + n; return IMG[k] && IMG[k].naturalWidth ? IMG[k].src : IMG[P.pet].src; }
 function startVet(done) {
   vet = { p: 0, done };
   setState('vet'); $('scrWin').classList.remove('on'); vetPatient();
 }
 function vetPatient() {
-  const P = VET_PETS[vet.p]; vet.steps = vetSteps(P); vet.s = 0; vet.tool = null; vet.busy = false;
-  const box = $('vetPet');
-  let h = '<img id="vetImg" src="' + IMG[P.pet].src + '" alt="">';
-  for (let i = 0; i < 5; i++) { // manchas de barro repartidas sobre el cuerpo
-    const x = 24 + (i % 3) * 22 + ri(8), y = 46 + Math.floor(i / 3) * 22 + ri(10);
-    h += '<span class="mud" data-m="' + i + '" style="left:' + x + '%;top:' + y + '%"></span>';
-  }
-  h += '<span class="wound" id="vetWound"></span><span class="tear">💧</span><div id="vetFx"></div>';
-  box.innerHTML = h; box.className = 'vet-pet sad dirty';
-  box.querySelectorAll('.mud').forEach(m => m.onclick = e => { e.stopPropagation(); vetMud(m); });
-  $('vetWound').onclick = e => { e.stopPropagation(); vetUse('wound'); };
-  box.onclick = () => vetUse('pet');
-  const need = vet.steps.map(s => s.tool), extra = shuffle(Object.keys(VET_TOOLS).filter(k => need.indexOf(k) < 0)).slice(0, 3);
+  const P = VET_PETS[vet.p]; vet.s = 0; vet.busy = false;
+  $('vetPet').innerHTML = '<img id="vetImg" src="' + vetPic(P, 1) + '" alt=""><div id="vetFx"></div>';
+  $('vetPet').className = 'vet-pet st1' + (IMG['vet_' + P.pet + '_1'] && IMG['vet_' + P.pet + '_1'].naturalWidth ? ' drawn' : '');
+  const need = VET_STEPS.map(s => s.tool), extra = shuffle(Object.keys(VET_TOOLS).filter(k => need.indexOf(k) < 0)).slice(0, 3);
   $('vetTools').innerHTML = shuffle(need.concat(extra)).map(k => '<button class="vt" data-t="' + k + '"><span>' + VET_TOOLS[k][0] + '</span><small>' + VET_TOOLS[k][1] + '</small></button>').join('');
   $('vetTools').querySelectorAll('.vt').forEach(b => b.onclick = () => vetTool(b));
-  $('vetTitle').textContent = '🏥 ¡Veterinaria! ' + (vet.p === 0 ? '🐶' : '🐱');
-  speak([P.hi], true); vetShowStep(false);
+  $('vetTitle').textContent = '🏥 ¡Veterinaria! ' + (P.pet === 'dog' ? '🐶' : '🐱');
+  speak([P.hi], true); vetShowStep();
 }
-function vetShowStep(talk) {
-  const st = vet.steps[vet.s];
+function vetShowStep() {
+  const st = VET_STEPS[vet.s];
   $('vetHelp').innerHTML = st.txt;
-  $('vetDots').innerHTML = VET_PETS.map((P, i) => '<span>' + (i < vet.p ? '💖' : i === vet.p ? (P.pet === 'dog' ? '🐶' : '🐱') : '⚪') + '</span>').join('') +
-    ' &nbsp; ' + vet.steps.map((s, i) => '<span class="' + (i < vet.s ? 'ok' : i === vet.s ? 'now' : '') + '">' + VET_TOOLS[s.tool][0] + '</span>').join('');
-  if (talk !== false) speak([st.voz], true); else speak([st.voz]);
+  $('vetDots').innerHTML = VET_PETS.map((P, i) => '<span class="' + (i <= vet.p ? 'ok' : '') + '">' + (i < vet.p ? '💖' : P.pet === 'dog' ? '🐶' : '🐱') + '</span>').join('') +
+    ' &nbsp; ' + VET_STEPS.map((s, i) => '<span class="' + (i < vet.s ? 'ok' : i === vet.s ? 'now' : '') + '">' + VET_TOOLS[s.tool][0] + '</span>').join('');
+  speak([st.voz]);
 }
+function vetFx(ch, x, y, cls, delay) { setTimeout(() => { const s = document.createElement('span'); s.className = 'vfx ' + (cls || ''); s.textContent = ch; s.style.left = x + '%'; s.style.top = y + '%'; $('vetFx').appendChild(s); setTimeout(() => s.remove(), 1500); }, delay || 0); }
 function vetTool(b) {
   if (vet.busy) return; initAudio();
-  const st = vet.steps[vet.s];
+  const st = VET_STEPS[vet.s], P = VET_PETS[vet.p];
   if (b.dataset.t !== st.tool) { b.classList.add('bad'); sfx.hurt(); setTimeout(() => b.classList.remove('bad'), 400); speak(['vet_esa_no'], true); $('vetHelp').innerHTML = '🙈 Esa no es… ' + st.txt; return; }
-  $('vetTools').querySelectorAll('.vt.sel').forEach(x => x.classList.remove('sel'));
-  b.classList.add('sel'); vet.tool = st.tool; play('click', 0.5); $('vetHelp').innerHTML = VET_TOOLS[st.tool][0] + ' ' + st.go;
-  if (st.tool === 'soap') $('vetPet').classList.add('scrub');
-}
-function vetFx(ch, x, y, cls) { const s = document.createElement('span'); s.className = 'vfx ' + (cls || ''); s.textContent = ch; s.style.left = x + '%'; s.style.top = y + '%'; $('vetFx').appendChild(s); setTimeout(() => s.remove(), 1400); }
-function vetMud(m) {
-  if (vet.busy || vet.tool !== 'soap' || vet.steps[vet.s].tool !== 'soap') { vetUse('pet'); return; }
-  if (m.classList.contains('foam')) return;
-  m.classList.add('foam'); m.textContent = '🫧'; play('boing', 0.3);
-  if (!$('vetPet').querySelector('.mud:not(.foam)')) { $('vetPet').classList.remove('dirty', 'scrub'); vetNext(); }
-}
-function vetUse(where) {
-  if (vet.busy) return; const st = vet.steps[vet.s];
-  if (!vet.tool) { $('vetHelp').innerHTML = '👇 Primero elige algo de la bandeja. ' + st.txt; return; }
-  if (st.tool === 'soap') return;
-  if (st.tool === 'band' && where !== 'wound') { $('vetHelp').innerHTML = '🩹 ¡En la herida roja!'; return; }
-  const box = $('vetPet');
-  if (st.tool === 'shower') {
-    for (let i = 0; i < 9; i++) setTimeout(() => vetFx('💧', 20 + ri(60), -5, 'drop'), i * 90);
-    play('splash', 0.5); setTimeout(() => box.querySelectorAll('.mud').forEach(m => m.remove()), 700);
-  } else if (st.tool === 'shot') {
-    vetFx('💉', 62, 40, 'poke'); box.classList.add('ouch'); setTimeout(() => { box.classList.remove('ouch'); vetFx('✨', 58, 64); }, 600);
-  } else if (st.tool === 'band') {
-    $('vetWound').classList.add('fixed'); $('vetWound').textContent = '🩹'; play('star', 0.4);
-  } else { // premio: queda sanito y feliz
-    vetFx(VET_TOOLS[st.tool][0], 50, 55, 'eat'); box.className = 'vet-pet happy';
-    for (let i = 0; i < 7; i++) setTimeout(() => vetFx(pick(['💖', '⭐', '💕']), 15 + ri(70), 30 + ri(40), 'up'), 200 + i * 120);
-  }
-  vetNext();
-}
-function vetNext() {
-  vet.busy = true; vet.tool = null; vet.s++;
-  $('vetTools').querySelectorAll('.vt.sel').forEach(x => x.classList.remove('sel'));
-  if (vet.s < vet.steps.length) { play('star', 0.35); setTimeout(() => { vet.busy = false; vetShowStep(); }, 1200); return; }
-  play('win', 0.5); $('vetHelp').innerHTML = '🎉 ¡El ' + VET_PETS[vet.p].name + ' quedó sanito y feliz!'; speak(['vet_sano'], true);
-  vet.p++;
+  vet.busy = true; b.classList.add('sel'); play('click', 0.5);
+  const box = $('vetPet'), img = $('vetImg');
+  // efecto de la acción y, a mitad del efecto, cambia el dibujo de la mascota al siguiente estado
+  if (st.fx === 'foam') { for (let i = 0; i < 14; i++) vetFx('🫧', 15 + ri(70), 25 + ri(60), 'bub', i * 60); play('splash', 0.3); }
+  if (st.fx === 'rain') { vetFx('🚿', 50, 2, 'head'); for (let i = 0; i < 16; i++) vetFx('💧', 20 + ri(60), 8, 'drop', i * 70); play('water', 0.5); }
+  if (st.fx === 'heal') { vetFx('💉', 64, 52, 'poke'); for (let i = 0; i < 6; i++) vetFx('✨', 25 + ri(50), 30 + ri(50), 'up', 500 + i * 90); }
+  setTimeout(() => { box.classList.add('swap'); }, 550);
+  setTimeout(() => { img.src = vetPic(P, vet.s + 2); box.classList.remove('st1', 'st2', 'st3', 'swap'); box.classList.add('st' + (vet.s + 2)); }, 800);
   setTimeout(() => {
-    if (vet.p < VET_PETS.length) vetPatient();
-    else { $('vetDots').innerHTML = '💖💖'; $('vetHelp').innerHTML = '🩺 ¡Eres una gran doctora, Amanda!'; speak(['p2'], true); setTimeout(() => { const d = vet.done; vet = null; d(); }, 2600); }
-  }, 3200);
+    b.classList.remove('sel'); b.classList.add('used'); vet.s++;
+    if (vet.s < VET_STEPS.length) { play('star', 0.4); vet.busy = false; vetShowStep(); return; }
+    play('win', 0.5); for (let i = 0; i < 8; i++) vetFx(pick(['💖', '⭐', '💕']), 15 + ri(70), 30 + ri(40), 'up', i * 120);
+    $('vetHelp').innerHTML = '🎉 ¡El ' + P.name + ' quedó sanito y feliz!'; speak(['vet_sano'], true);
+    vet.p++;
+    setTimeout(() => {
+      if (vet.p < VET_PETS.length) vetPatient();
+      else { $('vetDots').innerHTML = '💖💖'; $('vetHelp').innerHTML = '🩺 ¡Eres una gran doctora, Amanda!'; speak(['p2'], true); setTimeout(() => { const d = vet.done; vet = null; d(); }, 2600); }
+    }, 3400);
+  }, 1500);
 }
 
 /* ---------- Pantalla para elegir los botones del control ---------- */
