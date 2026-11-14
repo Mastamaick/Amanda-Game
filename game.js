@@ -1571,7 +1571,7 @@ function showFinale() {
   $('finStats').innerHTML = '<span class="pill">🌍 ' + LEVELS.length + ' mundos</span><span class="pill">⭐ ' + stars + ' / ' + LEVELS.length * 3 + '</span>' + (met.length ? '<span class="pill">🐾 ' + met.length + ' amigos</span>' : '') +
     ((save.fruits || []).length ? '<span class="pill">🍓 ' + save.fruits.length + ' frutas</span>' : '');
   setState('fin'); $('scrWin').classList.remove('on');
-  shutUp(); play('win', 0.6); setTimeout(() => speak(['w_win', 'p_todo'], true), 1200);
+  shutUp(); play('win', 0.6); setTimeout(() => speak(['fin_final'], true), 1200);
   const box = $('finConf'), cols = ['#ff7fb6', '#ffd84d', '#7be0c3', '#7fb8ff', '#c69bff'];
   box.innerHTML = '';
   for (let i = 0; i < 70; i++) {
